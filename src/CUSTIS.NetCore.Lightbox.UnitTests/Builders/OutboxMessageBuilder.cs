@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using CUSTIS.NetCore.Outbox.DomainModel;
-using CUSTIS.NetCore.UnitTests.Outbox.Common;
+using CUSTIS.NetCore.Lightbox.DomainModel;
+using CUSTIS.NetCore.Lightbox.UnitTests.Common;
 using Newtonsoft.Json;
 
-namespace CUSTIS.NetCore.UnitTests.Outbox.Builders
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Builders
 {
     internal class OutboxMessageBuilder
     {

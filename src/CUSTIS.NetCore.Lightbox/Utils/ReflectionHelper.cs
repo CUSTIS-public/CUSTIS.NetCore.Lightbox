@@ -1,14 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using System.Threading;
 
-namespace CUSTIS.NetCore.Utils.Reflection
+namespace CUSTIS.NetCore.Lightbox.Utils
 {
     /// <summary>Вспомогательный класс для работы с Reflection</summary>
     internal static class ReflectionHelper

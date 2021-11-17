@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace CUSTIS.NetCore.Outbox.Contracts.Filters
+namespace CUSTIS.NetCore.Lightbox.Filters
 {
     /// <summary> Контекст обработки сообщения </summary>
     public class ForwardContext

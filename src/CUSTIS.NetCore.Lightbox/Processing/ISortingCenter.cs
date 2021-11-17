@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CUSTIS.NetCore.Outbox.Processing
+namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <summary> Сортировочный центр Outbox </summary>
     public interface ISortingCenter

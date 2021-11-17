@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CUSTIS.NetCore.Outbox.Contracts;
+using CUSTIS.NetCore.Lightbox.Processing;
 
-namespace CUSTIS.NetCore.UnitTests.Outbox.Common
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Common
 {
     internal class TestSwitchman : ISwitchman
     {

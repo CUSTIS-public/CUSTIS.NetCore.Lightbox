@@ -1,6 +1,6 @@
 using System;
 
-namespace CUSTIS.NetCore.Outbox.DomainModel
+namespace CUSTIS.NetCore.Lightbox.DomainModel
 {
     /// <summary> Сообщение </summary>
     internal class OutboxMessage

@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
-using CUSTIS.NetCore.Outbox.DependencyInjection;
+using CUSTIS.NetCore.Lightbox.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CUSTIS.NetCore.Tests.Mocks
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Mocks
 {
     /// <summary> Мок для <see cref="IServiceProvider"/> </summary>
     public class ServiceProviderMock : MockSkeleton<ILightboxServiceProvider>

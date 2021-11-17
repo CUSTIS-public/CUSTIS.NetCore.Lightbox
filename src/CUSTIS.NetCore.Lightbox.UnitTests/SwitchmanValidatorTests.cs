@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using CUSTIS.NetCore.Outbox.Contracts;
-using CUSTIS.NetCore.Outbox.Processing;
+using CUSTIS.NetCore.Lightbox.Processing;
 using NUnit.Framework;
 
-namespace CUSTIS.NetCore.UnitTests.Outbox
+namespace CUSTIS.NetCore.Lightbox.UnitTests
 {
     public class SwitchmanValidatorTests
     {

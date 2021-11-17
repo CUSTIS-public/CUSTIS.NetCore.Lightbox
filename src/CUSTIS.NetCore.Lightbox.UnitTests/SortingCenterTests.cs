@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using CUSTIS.NetCore.Outbox.Contracts;
-using CUSTIS.NetCore.Outbox.Contracts.Filters;
-using CUSTIS.NetCore.Outbox.DomainModel;
-using CUSTIS.NetCore.Outbox.Processing;
-using CUSTIS.NetCore.Tests.Mocks;
-using CUSTIS.NetCore.UnitTests.Outbox.Builders;
-using CUSTIS.NetCore.UnitTests.Outbox.Common;
-using CUSTIS.NetCore.UnitTests.Outbox.Mocks;
+using CUSTIS.NetCore.Lightbox.DomainModel;
+using CUSTIS.NetCore.Lightbox.Filters;
+using CUSTIS.NetCore.Lightbox.Options;
+using CUSTIS.NetCore.Lightbox.Processing;
+using CUSTIS.NetCore.Lightbox.UnitTests.Builders;
+using CUSTIS.NetCore.Lightbox.UnitTests.Common;
+using CUSTIS.NetCore.Lightbox.UnitTests.Mocks;
 using Moq;
 using NUnit.Framework;
 
-namespace CUSTIS.NetCore.UnitTests.Outbox
+namespace CUSTIS.NetCore.Lightbox.UnitTests
 {
     public class SortingCenterTests
     {

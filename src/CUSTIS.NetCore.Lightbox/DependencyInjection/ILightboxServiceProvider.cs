@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CUSTIS.NetCore.Outbox.DependencyInjection
+namespace CUSTIS.NetCore.Lightbox.DependencyInjection
 {
     /// <summary> DI-контейнер, из которого Lightbox получает необходимые сервисы </summary>
     public interface ILightboxServiceProvider

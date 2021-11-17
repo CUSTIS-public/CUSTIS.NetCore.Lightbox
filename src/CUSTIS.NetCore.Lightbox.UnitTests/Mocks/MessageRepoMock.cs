@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
-using CUSTIS.NetCore.Outbox.DAL;
-using CUSTIS.NetCore.Outbox.DomainModel;
-using CUSTIS.NetCore.Tests.Mocks;
+using CUSTIS.NetCore.Lightbox.DAL;
+using CUSTIS.NetCore.Lightbox.DomainModel;
 using Moq;
 
-namespace CUSTIS.NetCore.UnitTests.Outbox.Mocks
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Mocks
 {
     internal sealed class MessageRepoMock : MockSkeleton<IOutboxMessageRepository>
     {

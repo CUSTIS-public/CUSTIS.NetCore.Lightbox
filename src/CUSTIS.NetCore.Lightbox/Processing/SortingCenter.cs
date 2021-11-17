@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CUSTIS.NetCore.Outbox.Contracts;
-using CUSTIS.NetCore.Outbox.Contracts.Filters;
-using CUSTIS.NetCore.Outbox.DAL;
-using CUSTIS.NetCore.Outbox.DependencyInjection;
-using CUSTIS.NetCore.Outbox.DomainModel;
-using CUSTIS.NetCore.Utils.Reflection;
-using CUSTIS.NetCore.Utils.Serialization;
+using CUSTIS.NetCore.Lightbox.DAL;
+using CUSTIS.NetCore.Lightbox.DependencyInjection;
+using CUSTIS.NetCore.Lightbox.DomainModel;
+using CUSTIS.NetCore.Lightbox.Filters;
+using CUSTIS.NetCore.Lightbox.Options;
+using CUSTIS.NetCore.Lightbox.Utils;
 using Newtonsoft.Json;
 
-namespace CUSTIS.NetCore.Outbox.Processing
+namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <inheritdoc />
     internal class SortingCenter : ISortingCenter

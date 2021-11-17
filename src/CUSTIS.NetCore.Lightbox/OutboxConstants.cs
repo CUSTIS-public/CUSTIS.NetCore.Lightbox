@@ -1,4 +1,4 @@
-namespace CUSTIS.NetCore.Outbox
+namespace CUSTIS.NetCore.Lightbox
 {
     internal class OutboxConstants
     {

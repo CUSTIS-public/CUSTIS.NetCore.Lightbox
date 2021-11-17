@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CUSTIS.NetCore.Outbox.Contracts.Filters
+namespace CUSTIS.NetCore.Lightbox.Filters
 {
     /// <summary> Фильтр, вызываемый во время пересылки сообщения из Outbox </summary>
     public interface IOutboxForwardFilter

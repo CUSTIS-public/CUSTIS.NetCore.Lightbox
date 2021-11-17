@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CUSTIS.NetCore.Outbox.Contracts;
-using CUSTIS.NetCore.Outbox.Contracts.Filters;
-using CUSTIS.NetCore.Outbox.DAL;
-using CUSTIS.NetCore.Outbox.DomainModel;
+using CUSTIS.NetCore.Lightbox.DAL;
+using CUSTIS.NetCore.Lightbox.DomainModel;
+using CUSTIS.NetCore.Lightbox.Filters;
 using Newtonsoft.Json;
 
-namespace CUSTIS.NetCore.Outbox.Sending
+namespace CUSTIS.NetCore.Lightbox.Sending
 {
     /// <summary> Ящик для отправки сообщений Outbox </summary>
     internal class MessageBox : IMessageBox

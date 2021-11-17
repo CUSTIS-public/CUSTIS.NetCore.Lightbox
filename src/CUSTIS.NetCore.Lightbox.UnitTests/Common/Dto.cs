@@ -1,4 +1,4 @@
-namespace CUSTIS.NetCore.UnitTests.Outbox.Common
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Common
 {
     internal class Dto
     {

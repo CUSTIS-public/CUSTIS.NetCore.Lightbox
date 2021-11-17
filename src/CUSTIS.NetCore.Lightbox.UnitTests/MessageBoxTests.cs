@@ -4,14 +4,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ApprovalUtilities.Utilities;
-using CUSTIS.NetCore.Outbox.Contracts.Filters;
-using CUSTIS.NetCore.Outbox.Sending;
-using CUSTIS.NetCore.UnitTests.Outbox.Common;
-using CUSTIS.NetCore.UnitTests.Outbox.Mocks;
+using CUSTIS.NetCore.Lightbox.Filters;
+using CUSTIS.NetCore.Lightbox.Sending;
+using CUSTIS.NetCore.Lightbox.UnitTests.Common;
+using CUSTIS.NetCore.Lightbox.UnitTests.Mocks;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace CUSTIS.NetCore.UnitTests.Outbox
+namespace CUSTIS.NetCore.Lightbox.UnitTests
 {
     public class MessageBoxTests
     {

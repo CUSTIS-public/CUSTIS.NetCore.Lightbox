@@ -1,6 +1,6 @@
 using System;
 
-namespace CUSTIS.NetCore.Outbox.DependencyInjection
+namespace CUSTIS.NetCore.Lightbox.DependencyInjection
 {
     /// <summary> Дочерний контейнер </summary>
     public interface ILightboxContainerScope : IDisposable

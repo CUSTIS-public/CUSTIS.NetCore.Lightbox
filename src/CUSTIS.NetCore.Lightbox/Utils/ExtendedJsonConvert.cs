@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace CUSTIS.NetCore.Utils.Serialization
+namespace CUSTIS.NetCore.Lightbox.Utils
 {
     /// <summary> Расширенный JsonConvert </summary>
     internal static class ExtendedJsonConvert

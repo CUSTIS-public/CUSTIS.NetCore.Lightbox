@@ -2,11 +2,10 @@ using System;
 using System.Data;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using CUSTIS.NetCore.Outbox.Processing;
-using CUSTIS.NetCore.Tests.Mocks;
+using CUSTIS.NetCore.Lightbox.Processing;
 using Moq;
 
-namespace CUSTIS.NetCore.UnitTests.Outbox.Mocks
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Mocks
 {
     internal class SwitchmanCollectionMock : MockSkeleton<ISwitchmanCollection>
     {

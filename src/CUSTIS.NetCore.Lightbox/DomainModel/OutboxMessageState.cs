@@ -1,4 +1,4 @@
-namespace CUSTIS.NetCore.Outbox.DomainModel
+namespace CUSTIS.NetCore.Lightbox.DomainModel
 {
     /// <summary> Состояние сообщения </summary>
     internal enum OutboxMessageState

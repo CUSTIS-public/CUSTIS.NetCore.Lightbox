@@ -1,6 +1,6 @@
 using Moq;
 
-namespace CUSTIS.NetCore.Tests.Mocks
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Mocks
 {
     /// <summary> Скелет для создания моков </summary>
     public class MockSkeleton<T> where T : class

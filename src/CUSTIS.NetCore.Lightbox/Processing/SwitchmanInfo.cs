@@ -1,8 +1,7 @@
 using System;
 using System.Reflection;
-using CUSTIS.NetCore.Outbox.Contracts;
 
-namespace CUSTIS.NetCore.Outbox.Processing
+namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <summary> Информация о стрелочнике </summary>
     internal class SwitchmanInfo

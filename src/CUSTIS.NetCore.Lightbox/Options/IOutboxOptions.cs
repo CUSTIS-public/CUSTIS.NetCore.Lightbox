@@ -1,4 +1,4 @@
-namespace CUSTIS.NetCore.Outbox.Contracts
+namespace CUSTIS.NetCore.Lightbox.Options
 {
     /// <summary> Опции для настройки Outbox </summary>
     public interface IOutboxOptions

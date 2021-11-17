@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CUSTIS.NetCore.Outbox.Contracts;
 
-namespace CUSTIS.NetCore.Outbox.Processing
+namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <summary> Коллекция стрелочников </summary>
     internal class SwitchmanCollection : ISwitchmanCollection

@@ -1,4 +1,4 @@
-namespace CUSTIS.NetCore.Outbox.Processing
+namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <summary> Результат перенаправления сообщений Outbox в конечные системы </summary>
     public class ForwardResult

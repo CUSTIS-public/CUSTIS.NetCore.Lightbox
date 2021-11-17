@@ -1,4 +1,4 @@
-namespace CUSTIS.NetCore.Outbox.Processing
+namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <summary> Коллекция стрелочников  </summary>
     internal interface ISwitchmanCollection

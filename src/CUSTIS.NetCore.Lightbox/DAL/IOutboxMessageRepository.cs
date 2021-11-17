@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using CUSTIS.NetCore.Outbox.DomainModel;
+using CUSTIS.NetCore.Lightbox.DomainModel;
 
-namespace CUSTIS.NetCore.Outbox.DAL
+namespace CUSTIS.NetCore.Lightbox.DAL
 {
     /// <summary> Репозиторий сообщений Outbox </summary>
     internal interface IOutboxMessageRepository

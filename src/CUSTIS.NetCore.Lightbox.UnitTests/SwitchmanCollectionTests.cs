@@ -1,11 +1,9 @@
 using System;
-using CUSTIS.NetCore.Outbox;
-using CUSTIS.NetCore.Outbox.Contracts;
-using CUSTIS.NetCore.Outbox.Processing;
-using CUSTIS.NetCore.UnitTests.Outbox.Common;
+using CUSTIS.NetCore.Lightbox.Processing;
+using CUSTIS.NetCore.Lightbox.UnitTests.Common;
 using NUnit.Framework;
 
-namespace CUSTIS.NetCore.UnitTests.Outbox
+namespace CUSTIS.NetCore.Lightbox.UnitTests
 {
     public class SwitchmanCollectionTests
     {

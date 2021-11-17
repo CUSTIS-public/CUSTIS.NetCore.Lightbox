@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CUSTIS.NetCore.Outbox.Contracts
+namespace CUSTIS.NetCore.Lightbox.Sending
 {
     /// <summary> Ящик для отправки сообщений Outbox </summary>
     public interface IMessageBox

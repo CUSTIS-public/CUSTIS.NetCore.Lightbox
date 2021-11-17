@@ -1,6 +1,6 @@
 using System;
 
-namespace CUSTIS.NetCore.Outbox.Contracts
+namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <summary> Размечает метод, переадресующий сообщения из Outbox в нужную систему </summary>
     [AttributeUsage(AttributeTargets.Method)]

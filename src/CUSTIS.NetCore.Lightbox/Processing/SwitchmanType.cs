@@ -1,6 +1,6 @@
 using System;
 
-namespace CUSTIS.NetCore.Outbox.Processing
+namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <summary> Информация о типе стрелочника </summary>
     public class SwitchmanType

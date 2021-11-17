@@ -1,7 +1,7 @@
-using CUSTIS.NetCore.Outbox.Contracts;
-using CUSTIS.NetCore.Outbox.DAL;
+using CUSTIS.NetCore.Lightbox.DAL;
+using CUSTIS.NetCore.Lightbox.Processing;
 
-namespace CUSTIS.NetCore.UnitTests.Outbox.Common
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Common
 {
     internal class DbDependentSwitchman : ISwitchman
     {

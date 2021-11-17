@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using CUSTIS.NetCore.Outbox.Contracts;
-using CUSTIS.NetCore.Utils.Collections;
-using CUSTIS.NetCore.Utils.Reflection;
+using CUSTIS.NetCore.Lightbox.Utils;
 
-namespace CUSTIS.NetCore.Outbox.Processing
+namespace CUSTIS.NetCore.Lightbox.Processing
 {
     internal class SwitchmanValidator
     {

@@ -1,4 +1,4 @@
-namespace CUSTIS.NetCore.Outbox.Contracts
+namespace CUSTIS.NetCore.Lightbox.Options
 {
     /// <summary> Стратегия обработки ошибочных сообщений, по которым достигнут лимит обработки </summary>
     public enum MaxAttemptsErrorStrategy
