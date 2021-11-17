@@ -4,12 +4,20 @@
 <Project>
     <PropertyGroup>
         <Company>CUSTIS</Company>
-		<Copyright>© 2020-2021 CUSTIS TODO SMDISP-8993</Copyright>
-        <RepositoryUrl>TODO SMDISP-8993</RepositoryUrl>
-        <PackageProjectUrl>TODO SMDISP-8993</PackageProjectUrl>
+		<Copyright>Copyright © 2018, 2020-2021</Copyright>
+        <RepositoryUrl>https://git.custis.ru/pub/lightbox</RepositoryUrl>
+        <PackageProjectUrl>https://git.custis.ru/pub/lightbox</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
         <Version>1.0.0</Version>
+        <Authors>ishatalkin@custis.ru</Authors>
+        <Company>CUSTIS</Company>
+        <Copyright>Copyright © 2020-2021 CUSTIS</Copyright>
+        <PackageDescription>Lightweight implementaion of outbox pattern, which makes it available to send messages only when DB transaction if successfully commited.</PackageDescription>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     </PropertyGroup>
+    <ItemGroup>
+        <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
+    </ItemGroup>
     <PropertyGroup>
         <SolutionDirectory>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), CUSTIS.NetCore.Lightbox.sln))\</SolutionDirectory>
     </PropertyGroup>
