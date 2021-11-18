@@ -16,6 +16,7 @@
     </PropertyGroup>
     <ItemGroup>
         <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
+        <None Include="..\..\NOTICE" Pack="true" PackagePath=""/>
     </ItemGroup>
     <PropertyGroup>
         <SolutionDirectory>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), CUSTIS.NetCore.Lightbox.sln))\</SolutionDirectory>
