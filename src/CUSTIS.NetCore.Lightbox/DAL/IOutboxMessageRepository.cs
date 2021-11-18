@@ -6,7 +6,7 @@ using CUSTIS.NetCore.Lightbox.DomainModel;
 namespace CUSTIS.NetCore.Lightbox.DAL
 {
     /// <summary> Репозиторий сообщений Outbox </summary>
-    internal interface IOutboxMessageRepository
+    public interface IOutboxMessageRepository
     {
         /// <summary> Получить сообщения для обработки </summary>
         Task<IReadOnlyCollection<OutboxMessage>> GetMessagesToForward(int batchCount, CancellationToken token);
@@ -17,6 +17,7 @@ namespace CUSTIS.NetCore.Lightbox.DAL
         /// <summary> Пробрасывает изменения в БД</summary>
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
+        /// <summary> Создать сообщение </summary>
         Task Create(OutboxMessage message, CancellationToken token);
     }
 }

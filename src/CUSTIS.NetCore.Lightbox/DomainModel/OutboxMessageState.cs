@@ -1,7 +1,7 @@
 namespace CUSTIS.NetCore.Lightbox.DomainModel
 {
     /// <summary> Состояние сообщения </summary>
-    internal enum OutboxMessageState
+    public enum OutboxMessageState
     {
         /// <summary> Создано </summary>
         Created,

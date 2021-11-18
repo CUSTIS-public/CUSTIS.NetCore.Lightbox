@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <inheritdoc />
-    internal class SortingCenter : ISortingCenter
+    public class SortingCenter : ISortingCenter
     {
         private const int DefaultBatchCount = 50;
 

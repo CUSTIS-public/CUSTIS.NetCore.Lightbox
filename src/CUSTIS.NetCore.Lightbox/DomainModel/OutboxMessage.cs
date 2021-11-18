@@ -3,7 +3,7 @@ using System;
 namespace CUSTIS.NetCore.Lightbox.DomainModel
 {
     /// <summary> Сообщение </summary>
-    internal class OutboxMessage
+    public class OutboxMessage
     {
         /// <summary> Сообщение </summary>
         public OutboxMessage(string messageType)
@@ -16,11 +16,11 @@ namespace CUSTIS.NetCore.Lightbox.DomainModel
 
         /// <summary>Когда создан</summary>
         //TODO SMDISP-8993 заполнение
-        public DateTime CreationDateTime { get; set; }
+        public DateTime CreationDateTimeUtc { get; set; }
 
         /// <summary>Когда изменен</summary>
         //TODO SMDISP-8993 заполнение
-        public DateTime ModificationDateTime { get; set; }
+        public DateTime ModificationDateTimeUtc { get; set; }
 
         /// <summary> Тип сообщения </summary>
         public string MessageType { get; set; }
