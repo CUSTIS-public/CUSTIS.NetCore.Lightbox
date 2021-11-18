@@ -32,15 +32,15 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            var outboxOptions = Mock.Of<IOutboxOptions>(o => o.MaxAttemptsCount == MaxAttempts);
+            var outboxOptions = Mock.Of<ILightboxOptions>(o => o.MaxAttemptsCount == MaxAttempts);
             _sortingCenter = CreateSortingCenter(outboxOptions);
         }
 
-        private SortingCenter CreateSortingCenter(IOutboxOptions outboxOptions)
+        private SortingCenter CreateSortingCenter(ILightboxOptions lightboxOptions)
         {
             return new(
                 _messageRepo.Object, _switchmanCollection.Object,
-                _serviceProvider.Object, outboxOptions);
+                _serviceProvider.Object, lightboxOptions);
         }
 
         [SetUp]
@@ -85,7 +85,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ThrowError());
             var message = new OutboxMessageBuilder().WithAttemptCount(MaxAttempts).Build();
             _messageRepo.SetupGetMessagesToProcess(message);
-            var options = Mock.Of<IOutboxOptions>(
+            var options = Mock.Of<ILightboxOptions>(
                 o => o.MaxAttemptsCount == MaxAttempts
                      && o.MaxAttemptsErrorStrategy == MaxAttemptsErrorStrategy.Delete);
             var sortingCenter = CreateSortingCenter(options);
@@ -105,7 +105,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ThrowError());
             var message = new OutboxMessageBuilder().WithAttemptCount(MaxAttempts).Build();
             _messageRepo.SetupGetMessagesToProcess(message);
-            var options = Mock.Of<IOutboxOptions>(
+            var options = Mock.Of<ILightboxOptions>(
                 o => o.MaxAttemptsCount == MaxAttempts
                      && o.MaxAttemptsErrorStrategy == MaxAttemptsErrorStrategy.Retain);
             var sortingCenter = CreateSortingCenter(options);
@@ -134,7 +134,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
             Assert.Multiple(
                 () =>
                 {
-                    Assert.That(message.State, Is.EqualTo(OutboxMessageState.Error));
+                    Assert.That(message.State, Is.EqualTo(LightboxMessageState.Error));
                     Assert.That(message.Error, Contains.Substring(TestSwitchman.ErrMessage));
                 });
         }
@@ -174,7 +174,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
             Assert.Multiple(
                 () =>
                 {
-                    Assert.That(message.State, Is.EqualTo(OutboxMessageState.Error));
+                    Assert.That(message.State, Is.EqualTo(LightboxMessageState.Error));
                     Assert.That(message.Error, Contains.Substring("Произошла ошибочка"));
                 });
         }
@@ -194,7 +194,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
             Assert.Multiple(
                 () =>
                 {
-                    Assert.That(message.State, Is.EqualTo(OutboxMessageState.Error));
+                    Assert.That(message.State, Is.EqualTo(LightboxMessageState.Error));
                     Assert.That(message.Error, Contains.Substring("Произошла ошибочка"));
                 });
         }

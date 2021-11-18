@@ -30,12 +30,6 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                 valid = false;
             }
 
-            if (switchmanAttribute.MessageType.Length > OutboxConstants.MaxMessageTypeLength)
-            {
-                _longMessageTypes.Add(switchmanAttribute.MessageType);
-                valid = false;
-            }
-
             return valid;
         }
 
@@ -59,13 +53,6 @@ namespace CUSTIS.NetCore.Lightbox.Processing
             {
                 errors.Add("Асинхронные методы стрелочников должны возвращать Task. " +
                            $"Ошибочные методы: [{_asyncVoidMethods.ToJoinedString(ReflectionHelper.GetMemberName)}]");
-            }
-
-            if (_longMessageTypes.Any())
-            {
-                errors.Add(
-                    $"В типе сообщения допустимо использовать не более {OutboxConstants.MaxMessageTypeLength} символов. " +
-                    $"Ошибочные типы сообщений: [{_longMessageTypes.ToJoinedString()}]");
             }
 
             if (_ambiguousSubscribers?.Any() ?? false)

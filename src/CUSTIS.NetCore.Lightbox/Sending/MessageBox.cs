@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CUSTIS.NetCore.Lightbox.DAL;
-using CUSTIS.NetCore.Lightbox.DomainModel;
 using CUSTIS.NetCore.Lightbox.Filters;
 using Newtonsoft.Json;
 
@@ -12,14 +11,18 @@ namespace CUSTIS.NetCore.Lightbox.Sending
     /// <summary> Ящик для отправки сообщений Outbox </summary>
     public class MessageBox : IMessageBox
     {
-        private readonly IOutboxMessageRepository _outboxMessageRepository;
+        private readonly ILightboxMessageRepository _lightboxMessageRepository;
+
+        private readonly ILightboxMessageInitializer _messageInitializer;
 
         private readonly IReadOnlyCollection<IOutboxPutFilter> _putFilters;
 
         /// <summary> Отправитель сообщений </summary>
-        public MessageBox(IOutboxMessageRepository outboxMessageRepository, IEnumerable<IOutboxPutFilter> putFilters)
+        public MessageBox(ILightboxMessageRepository lightboxMessageRepository, IEnumerable<IOutboxPutFilter> putFilters,
+                          ILightboxMessageInitializer messageInitializer)
         {
-            _outboxMessageRepository = outboxMessageRepository;
+            _lightboxMessageRepository = lightboxMessageRepository;
+            _messageInitializer = messageInitializer;
             _putFilters = putFilters.Reverse().ToArray();
         }
 
@@ -46,16 +49,8 @@ namespace CUSTIS.NetCore.Lightbox.Sending
 
         private async Task CreateMessage(PutContext context, CancellationToken token)
         {
-            var message = new OutboxMessage(context.MessageType);
-
-            message.Body = context.SerializedBody;
-
-            if (context.Headers.Any())
-            {
-                message.Headers = JsonConvert.SerializeObject(context.Headers);
-            }
-
-            await _outboxMessageRepository.Create(message, token);
+            var message = await _lightboxMessageRepository.Create(token);
+            _messageInitializer.FillMessage(message, context);
         }
     }
 }

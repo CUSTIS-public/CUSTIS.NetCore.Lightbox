@@ -9,11 +9,9 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Common
     {
         public long InvocationCount { get; private set; }
 
-        public const string MessageType = "testmessage";
-
         public const string ErrMessage = "При обработке сообщения произошло исключение";
 
-        [Switchman(MessageType)]
+        [Switchman(nameof(ProcessMessage))]
         public void ProcessMessage()
         {
             InvocationCount++;

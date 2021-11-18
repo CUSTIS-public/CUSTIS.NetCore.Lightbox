@@ -8,9 +8,9 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Builders
 {
     internal class OutboxMessageBuilder
     {
-        public OutboxMessage Build()
+        public ILightboxMessage Build()
         {
-            var message = new OutboxMessage(string.Empty)
+            var message = new LightboxMessage
             {
                 AttemptCount = _attemptCount,
                 Headers = JsonConvert.SerializeObject(_headers)

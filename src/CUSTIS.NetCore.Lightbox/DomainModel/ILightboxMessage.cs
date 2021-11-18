@@ -3,24 +3,10 @@ using System;
 namespace CUSTIS.NetCore.Lightbox.DomainModel
 {
     /// <summary> Сообщение </summary>
-    public class OutboxMessage
+    public interface ILightboxMessage
     {
-        /// <summary> Сообщение </summary>
-        public OutboxMessage(string messageType)
-        {
-            MessageType = messageType;
-        }
-
-        /// <summary>Идентификатор</summary>
-        public long Id { get; set; }
-
-        /// <summary>Когда создан</summary>
-        //TODO SMDISP-8993 заполнение
-        public DateTime CreationDateTimeUtc { get; set; }
-
-        /// <summary>Когда изменен</summary>
-        //TODO SMDISP-8993 заполнение
-        public DateTime ModificationDateTimeUtc { get; set; }
+        /// <summary> ИД сообщения </summary>
+        public long Id { get; }
 
         /// <summary> Тип сообщения </summary>
         public string MessageType { get; set; }
@@ -34,9 +20,9 @@ namespace CUSTIS.NetCore.Lightbox.DomainModel
         public string? Body { get; set; }
 
         /// <summary> Состояние сообщения </summary>
-        public OutboxMessageState State { get; set; } = OutboxMessageState.Created;
+        public LightboxMessageState State { get; set; }
 
-        /// <summary> Сообщение об ошибке (в случае состояния <see cref="OutboxMessageState.Error"/> </summary>
+        /// <summary> Сообщение об ошибке (в случае состояния <see cref="LightboxMessageState.Error"/> </summary>
         public string? Error { get; set; }
 
         /// <summary> Кол-во попыток обработки сообщения </summary>

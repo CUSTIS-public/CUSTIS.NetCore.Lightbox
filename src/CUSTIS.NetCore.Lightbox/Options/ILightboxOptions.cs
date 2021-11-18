@@ -1,7 +1,7 @@
 namespace CUSTIS.NetCore.Lightbox.Options
 {
     /// <summary> Опции для настройки Outbox </summary>
-    public interface IOutboxOptions
+    public interface ILightboxOptions
     {
         /// <summary> Максимальное кол-во попыток обработки сообщения </summary>
         long MaxAttemptsCount { get; }

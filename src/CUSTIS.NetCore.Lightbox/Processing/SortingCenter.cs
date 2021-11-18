@@ -7,6 +7,7 @@ using CUSTIS.NetCore.Lightbox.DAL;
 using CUSTIS.NetCore.Lightbox.DependencyInjection;
 using CUSTIS.NetCore.Lightbox.DomainModel;
 using CUSTIS.NetCore.Lightbox.Filters;
+using CUSTIS.NetCore.Lightbox.Observers;
 using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Utils;
 using Newtonsoft.Json;
@@ -18,32 +19,33 @@ namespace CUSTIS.NetCore.Lightbox.Processing
     {
         private const int DefaultBatchCount = 50;
 
-        private readonly IOutboxMessageRepository _outboxMessageRepository;
+        private readonly ILightboxMessageRepository _lightboxMessageRepository;
 
         private readonly ISwitchmanCollection _switchmans;
 
         private readonly ILightboxServiceProvider _serviceProvider;
 
-        private readonly IOutboxOptions _outboxOptions;
+        private readonly ILightboxOptions _lightboxOptions;
 
-        //TODO SMDISP-8993
-        //private static readonly ILogger Logger = Log.ForContext<SortingCenter>();
+        private readonly IForwardObserver? _forwardObserver;
 
         /// <summary> Обработчик сообщений </summary>
         public SortingCenter(
-            IOutboxMessageRepository outboxMessageRepository, ISwitchmanCollection switchmans,
-            ILightboxServiceProvider serviceProvider, IOutboxOptions outboxOptions)
+            ILightboxMessageRepository lightboxMessageRepository, ISwitchmanCollection switchmans,
+            ILightboxServiceProvider serviceProvider, ILightboxOptions lightboxOptions,
+            IForwardObserver? forwardObserver = null)
         {
-            _outboxMessageRepository = outboxMessageRepository;
+            _lightboxMessageRepository = lightboxMessageRepository;
             _switchmans = switchmans;
             _serviceProvider = serviceProvider;
-            _outboxOptions = outboxOptions;
+            _lightboxOptions = lightboxOptions;
+            _forwardObserver = forwardObserver;
         }
 
         /// <summary> Перенаправить сообщения Outbox в системы-получатели </summary>
         public async Task<ForwardResult> ForwardMessages(int? batchCount = null, CancellationToken token = default)
         {
-            var messages = await _outboxMessageRepository.GetMessagesToForward(batchCount ?? DefaultBatchCount, token);
+            var messages = await _lightboxMessageRepository.GetMessagesToForward(batchCount ?? DefaultBatchCount, token);
             var success = 0;
             var errors = 0;
 
@@ -52,41 +54,35 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                 try
                 {
                     await ForwardMessage(message, token);
-                    _outboxMessageRepository.Remove(message);
+                    _lightboxMessageRepository.Remove(message);
                     success++;
                 }
                 catch (Exception e)
                 {
+                    if (_forwardObserver != null)
+                    {
+                        await _forwardObserver.ForwardFault(message, e, token);
+                    }
+
                     errors++;
-                    /*
-                    Logger.Error(
-                        e,
-                        "При обработке сообщения {MessageId} с типом {MessageType} произошла ошибка {Type}) {Message}",
-                        message.Id, message.MessageType, e.GetType().Name, e.Message);
-                    */
-                    message.State = OutboxMessageState.Error;
+                    message.State = LightboxMessageState.Error;
                     message.Error = e.ToString();
                     message.AttemptCount++;
 
-                    if (_outboxOptions.MaxAttemptsErrorStrategy == MaxAttemptsErrorStrategy.Delete
-                        && message.AttemptCount > _outboxOptions.MaxAttemptsCount)
+                    if (_lightboxOptions.MaxAttemptsErrorStrategy == MaxAttemptsErrorStrategy.Delete
+                        && message.AttemptCount > _lightboxOptions.MaxAttemptsCount)
                     {
-                        /*
-                        Logger.Information(
-                            "Удаляем сообщение {MessageId} с типом {MessageType}, поскольку превышен порог попыток обработки",
-                            message.Id, message.MessageType);
-                        */
-                        _outboxMessageRepository.Remove(message);
+                        _lightboxMessageRepository.Remove(message);
                     }
                 }
             }
 
-            await _outboxMessageRepository.SaveChangesAsync(token);
+            await _lightboxMessageRepository.SaveChangesAsync(token);
 
             return new ForwardResult(success, errors);
         }
 
-        private async Task ForwardMessage(OutboxMessage message, CancellationToken token)
+        private async Task ForwardMessage(ILightboxMessage message, CancellationToken token)
         {
             var subscriberInfo = _switchmans.Get(message.MessageType);
 
@@ -115,7 +111,7 @@ namespace CUSTIS.NetCore.Lightbox.Processing
         }
 
         private static (List<object?>? parameters, object? msgBody) GetParameters(
-            SwitchmanInfo subscriberInfo, OutboxMessage message, CancellationToken token)
+            SwitchmanInfo subscriberInfo, ILightboxMessage message, CancellationToken token)
         {
             var parameterInfos = subscriberInfo.MethodInfo.GetParameters();
 

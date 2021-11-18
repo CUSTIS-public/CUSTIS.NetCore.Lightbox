@@ -3,11 +3,10 @@
 -->
 <Project>
     <PropertyGroup>
-        <Company>CUSTIS</Company>
         <RepositoryUrl>https://git.custis.ru/pub/lightbox</RepositoryUrl>
         <PackageProjectUrl>https://git.custis.ru/pub/lightbox</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
-        <Version>1.0.2</Version>
+        <Version>1.0.6</Version>
         <Authors>ishatalkin@custis.ru</Authors>
         <Company>CUSTIS</Company>
         <Copyright>Copyright © 2018, 2020-2021 CUSTIS</Copyright>
@@ -55,7 +54,6 @@
     <ItemGroup>
         <None Include="$(SolutionDirectory)\..\.editorconfig" Visible="false" />
         <Compile Include="$(SolutionDirectory)\CodeAnalysis\GlobalSuppressions.cs" Visible="false" />
-        <PackageReference Include="SerilogAnalyzer" Version="0.15.0" />
         <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.354">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

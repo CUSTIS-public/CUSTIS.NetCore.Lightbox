@@ -8,11 +8,11 @@ using Moq;
 
 namespace CUSTIS.NetCore.Lightbox.UnitTests.Mocks
 {
-    internal sealed class MessageRepoMock : MockSkeleton<IOutboxMessageRepository>
+    internal sealed class MessageRepoMock : MockSkeleton<ILightboxMessageRepository>
     {
-        private readonly List<OutboxMessage> _createdMessages = new List<OutboxMessage>();
+        private readonly List<ILightboxMessage> _createdMessages = new List<ILightboxMessage>();
 
-        public IReadOnlyCollection<OutboxMessage> CreatedMessages => _createdMessages;
+        public IReadOnlyCollection<ILightboxMessage> CreatedMessages => _createdMessages;
 
         public MessageRepoMock()
         {
@@ -24,17 +24,24 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Mocks
             base.Reset();
             _createdMessages.Clear();
 
-            Mock.Setup(r => r.Create(It.IsAny<OutboxMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<OutboxMessage, CancellationToken>((m, t) => _createdMessages.Add(m));
+            Mock.Setup(r => r.Create(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(
+                    (CancellationToken t) =>
+                    {
+                        var lightboxMessage = new LightboxMessage();
+                        _createdMessages.Add(lightboxMessage);
+
+                        return lightboxMessage;
+                    });
         }
 
-        public void SetupGetMessagesToProcess(OutboxMessage message)
+        public void SetupGetMessagesToProcess(ILightboxMessage message)
         {
             Mock.Setup(r => r.GetMessagesToForward(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ReadOnlyCollection<OutboxMessage>(new[] { message }));
+                .ReturnsAsync(new ReadOnlyCollection<ILightboxMessage>(new[] { message }));
         }
 
-        public void AssertRemoveInvoked(OutboxMessage message, Func<Times> times)
+        public void AssertRemoveInvoked(ILightboxMessage message, Func<Times> times)
         {
             Mock.Verify(r => r.Remove(message), times);
         }

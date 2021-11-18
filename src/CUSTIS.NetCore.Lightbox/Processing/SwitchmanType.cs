@@ -8,7 +8,16 @@ namespace CUSTIS.NetCore.Lightbox.Processing
         /// <summary> Информация о типе стрелочника </summary>
         public SwitchmanType(Type registeredType, Type implementationType)
         {
-            // TODO SMDISP-8993 Тест на то, что либо один, либо другой тип должны имплементить ISwitchman
+            if (!typeof(ISwitchman).IsAssignableFrom(implementationType))
+            {
+                throw new InvalidOperationException($"{implementationType} не реализует {nameof(ISwitchman)}");
+            }
+
+            if (!registeredType.IsAssignableFrom(implementationType))
+            {
+                throw new InvalidOperationException($"{implementationType} не реализует {registeredType}");
+            }
+
             RegisteredType = registeredType;
             ImplementationType = implementationType;
         }

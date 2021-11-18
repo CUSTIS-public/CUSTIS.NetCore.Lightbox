@@ -19,7 +19,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
 
         private static readonly MessageRepoMock Repo = new();
 
-        private readonly MessageBox _box = new(Repo.Object, Array.Empty<IOutboxPutFilter>());
+        private readonly MessageBox _box = CreateMessageBox();
 
         [SetUp]
         public void SetUp()
@@ -91,7 +91,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
         {
             //Arrange
             var putFilter = new PutFilter();
-            var box = new MessageBox(Repo.Object, new[] { putFilter });
+            var box = CreateMessageBox(putFilter);
 
             //Act
             await box.Put(MessageType);
@@ -106,13 +106,18 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
                 });
         }
 
+        private static MessageBox CreateMessageBox(params IOutboxPutFilter[] putFilters)
+        {
+            return new MessageBox(Repo.Object, putFilters, new LightboxMessageInitializer());
+        }
+
         [Test]
         public async Task Put_HasManyFilters_FiltersInvoked()
         {
             //Arrange
             var putFilter = new PutFilter();
             var putFilter2 = new PutFilter();
-            var box = new MessageBox(Repo.Object, new[] { putFilter, putFilter2 });
+            var box = CreateMessageBox(putFilter, putFilter2);
 
             //Act
             await box.Put(MessageType);
@@ -134,7 +139,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
             //Arrange
             var putFilter = new PutFilter { Name = "F1" };
             var putFilter2 = new PutFilter { Name = "F2" };
-            var box = new MessageBox(Repo.Object, new[] { putFilter, putFilter2 });
+            var box = CreateMessageBox(putFilter, putFilter2);
 
             //Act
             await box.Put(MessageType);
@@ -177,7 +182,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
         public async Task Put_NoHeaders_NullHeadersSaved()
         {
             //Arrange
-            var box = new MessageBox(Repo.Object, Array.Empty<IOutboxPutFilter>());
+            var box = CreateMessageBox();
 
             //Act
             await box.Put(MessageType);
@@ -197,7 +202,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
             //Arrange
             var initialHeaders = new Dictionary<string, string> { { "key", "value" }, { "k", "v" } };
             var filter = new HeaderFilter(initialHeaders);
-            var box = new MessageBox(Repo.Object, new[] { filter });
+            var box = CreateMessageBox(filter);
 
             //Act
             await box.Put(MessageType);
