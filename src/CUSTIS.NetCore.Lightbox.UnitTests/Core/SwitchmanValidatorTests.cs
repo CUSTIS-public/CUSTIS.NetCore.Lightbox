@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using CUSTIS.NetCore.Lightbox.Processing;
 using NUnit.Framework;
 
-namespace CUSTIS.NetCore.Lightbox.UnitTests
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
 {
     public class SwitchmanValidatorTests
     {

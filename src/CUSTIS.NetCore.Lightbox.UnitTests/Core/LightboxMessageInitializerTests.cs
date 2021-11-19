@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using System.ServiceModel.Channels;
 using CUSTIS.NetCore.Lightbox.DomainModel;
 using CUSTIS.NetCore.Lightbox.Filters;
 using CUSTIS.NetCore.Lightbox.Sending;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace CUSTIS.NetCore.Lightbox.UnitTests
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
 {
     public class LightboxMessageInitializerTests
     {
@@ -28,6 +27,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests
                 {
                     Assert.That(outboxMessage.MessageType, Is.EqualTo(putContext.MessageType));
                     Assert.That(outboxMessage.Body, Is.EqualTo(putContext.SerializedBody));
+                    Assert.That(outboxMessage.BodyType, Is.EqualTo(putContext.MessageBody!.GetType().FullName));
                     Assert.That(outboxMessage.Headers, Is.EqualTo(JsonConvert.SerializeObject(headers)));
                     Assert.That(outboxMessage.State, Is.EqualTo(LightboxMessageState.Created));
                     Assert.That(outboxMessage.Error, Is.Null.Or.Empty);

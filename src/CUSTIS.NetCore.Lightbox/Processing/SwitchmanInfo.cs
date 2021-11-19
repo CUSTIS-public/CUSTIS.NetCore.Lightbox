@@ -4,7 +4,7 @@ using System.Reflection;
 namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <summary> Информация о стрелочнике </summary>
-    public class SwitchmanInfo
+    internal class SwitchmanInfo
     {
         /// <summary> Тип обрабатываемого сообщения </summary>
         public string MessageType { get; set; }

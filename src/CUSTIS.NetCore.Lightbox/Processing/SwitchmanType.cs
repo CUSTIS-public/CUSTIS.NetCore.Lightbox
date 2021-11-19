@@ -3,7 +3,7 @@ using System;
 namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <summary> Информация о типе стрелочника </summary>
-    public class SwitchmanType
+    internal class SwitchmanType
     {
         /// <summary> Информация о типе стрелочника </summary>
         public SwitchmanType(Type registeredType, Type implementationType)

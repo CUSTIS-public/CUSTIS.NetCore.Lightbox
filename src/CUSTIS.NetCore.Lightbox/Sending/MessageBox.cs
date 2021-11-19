@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 namespace CUSTIS.NetCore.Lightbox.Sending
 {
     /// <summary> Ящик для отправки сообщений Outbox </summary>
-    public class MessageBox : IMessageBox
+    internal class MessageBox : IMessageBox
     {
         private readonly ILightboxMessageRepository _lightboxMessageRepository;
 

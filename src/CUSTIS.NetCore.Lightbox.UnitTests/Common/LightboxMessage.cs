@@ -16,6 +16,10 @@ namespace CUSTIS.NetCore.Lightbox.DomainModel
         /// <remarks> Содержит сериализованный в json объект </remarks>
         public string? Body { get; set; }
 
+        /// <summary> Type of body DTO </summary>
+        /// <remarks> Is null when <see cref="ILightboxMessage.Body"/> is null </remarks>
+        public string? BodyType { get; set; }
+
         /// <summary> Состояние сообщения </summary>
         public LightboxMessageState State { get; set; } = LightboxMessageState.Error;
 

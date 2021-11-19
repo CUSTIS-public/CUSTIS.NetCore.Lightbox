@@ -5,7 +5,7 @@ using System.Reflection;
 namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <summary> Коллекция стрелочников </summary>
-    public class SwitchmanCollection : ISwitchmanCollection
+    internal class SwitchmanCollection : ISwitchmanCollection
     {
         private readonly IDictionary<string, SwitchmanInfo> _switchmansByType;
 

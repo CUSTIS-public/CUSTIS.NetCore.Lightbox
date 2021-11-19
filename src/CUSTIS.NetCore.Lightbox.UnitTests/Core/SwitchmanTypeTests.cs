@@ -2,7 +2,7 @@ using CUSTIS.NetCore.Lightbox.Processing;
 using CUSTIS.NetCore.Lightbox.UnitTests.Common;
 using NUnit.Framework;
 
-namespace CUSTIS.NetCore.Lightbox.UnitTests
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
 {
     public class SwitchmanTypeTests
     {

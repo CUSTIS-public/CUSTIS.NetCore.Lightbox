@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 namespace CUSTIS.NetCore.Lightbox.Processing
 {
     /// <inheritdoc />
-    public class SortingCenter : ISortingCenter
+    internal class SortingCenter : ISortingCenter
     {
         private const int DefaultBatchCount = 50;
 
@@ -87,6 +87,11 @@ namespace CUSTIS.NetCore.Lightbox.Processing
             var subscriberInfo = _switchmans.Get(message.MessageType);
 
             var (parameters, msgBody) = GetParameters(subscriberInfo, message, token);
+            var headers = message.Headers != null
+                              ? ExtendedJsonConvert.Deserialize<IReadOnlyDictionary<string, string>>(message.Headers)
+                              : new Dictionary<string, string>();
+            var messageContext = new ForwardContext(message.Id, message.MessageType, message.AttemptCount,
+                                                    msgBody, message.Body, headers);
 
             using var scope = _serviceProvider.CreateScope();
             var serviceProvider = scope.ServiceProvider;
@@ -102,11 +107,6 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                 forwardDelegate = (context, t) => messageFilter.ForwardMessage(context, localDelegate, t);
             }
 
-            var headers = message.Headers != null
-                              ? ExtendedJsonConvert.Deserialize<IReadOnlyDictionary<string, string>>(message.Headers)
-                              : new Dictionary<string, string>();
-            var messageContext = new ForwardContext(message.Id, message.MessageType, message.AttemptCount,
-                                                    msgBody, message.Body, headers);
             await forwardDelegate(messageContext, token);
         }
 

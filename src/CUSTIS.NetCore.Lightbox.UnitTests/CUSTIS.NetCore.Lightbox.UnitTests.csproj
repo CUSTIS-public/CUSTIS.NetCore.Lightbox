@@ -12,6 +12,8 @@
 
   <ItemGroup>
 	<PackageReference Include="ApprovalTests" Version="5.7.0" />
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="nunit" Version="3.13.2" />
@@ -21,6 +23,7 @@
         <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\CUSTIS.NetCore.Lightbox.DependencyInjection\CUSTIS.NetCore.Lightbox.DependencyInjection.csproj" />
       <ProjectReference Include="..\CUSTIS.NetCore.Lightbox\CUSTIS.NetCore.Lightbox.csproj" />
     </ItemGroup>
 </Project>

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -11,7 +10,7 @@ using CUSTIS.NetCore.Lightbox.UnitTests.Mocks;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace CUSTIS.NetCore.Lightbox.UnitTests
+namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
 {
     public class MessageBoxTests
     {
