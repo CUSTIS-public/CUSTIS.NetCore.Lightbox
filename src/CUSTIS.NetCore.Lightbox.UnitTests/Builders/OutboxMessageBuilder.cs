@@ -13,7 +13,9 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Builders
             var message = new LightboxMessage
             {
                 AttemptCount = _attemptCount,
-                Headers = JsonConvert.SerializeObject(_headers)
+                Headers = JsonConvert.SerializeObject(_headers),
+                BodyType = _bodyType,
+                Error = null
             };
 
             if (_dto != null)
@@ -47,6 +49,16 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Builders
         public OutboxMessageBuilder WitDto(Dto dto)
         {
             _dto = dto;
+            _bodyType = dto.GetType().AssemblyQualifiedName;
+
+            return this;
+        }
+
+        private string? _bodyType = null;
+
+        public OutboxMessageBuilder WithBodyType(string? type)
+        {
+            _bodyType = type;
 
             return this;
         }

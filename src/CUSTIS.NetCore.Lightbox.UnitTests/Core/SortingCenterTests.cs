@@ -199,46 +199,6 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
                 });
         }
 
-        [Test]
-        public async Task ForwardMessages_SubscriberHasCancellationToken_TokenIsProvided()
-        {
-            //Arrange
-            _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessWithToken(It.IsAny<CancellationToken>()));
-            var message = new OutboxMessageBuilder().Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
-            using var tokenSource = new CancellationTokenSource();
-            Assume.That(_switchman.Token, Is.Null);
-
-            //Act
-            await _sortingCenter.ForwardMessages(token: tokenSource.Token);
-
-            //Assert
-            Assert.That(_switchman.Token, Is.EqualTo(tokenSource.Token));
-        }
-
-        [Test]
-        public async Task ForwardMessages_SubscriberHasDtoAndCancellationToken_DtoAndTokenProvided()
-        {
-            //Arrange
-            _switchmanCollection.SetupGet<TestSwitchman>(nameof(TestSwitchman.ProcessDtoWithToken));
-            var msg = "mymsg";
-            var message = new OutboxMessageBuilder().WitDto(new Dto(msg)).Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
-            using var tokenSource = new CancellationTokenSource();
-            Assume.That(_switchman.Token, Is.Null);
-
-            //Act
-            await _sortingCenter.ForwardMessages(token: tokenSource.Token);
-
-            //Assert
-            Assert.Multiple(
-                () =>
-                {
-                    Assert.That(_switchman.Token, Is.EqualTo(tokenSource.Token));
-                    Assert.That(_switchman.Dto?.Msg, Is.EqualTo(msg));
-                });
-        }
-
         #endregion
 
         #region Фильтры сообщений
@@ -374,6 +334,200 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
 
             //Assert
             Assert.That(filter.Headers, Is.EquivalentTo(initialHeaders));
+        }
+
+        #endregion
+
+        #region Тело сообщения
+
+        [Test]
+        public async Task ForwardMessages_BodyWithoutBodyType_MessageStateIsError()
+        {
+            //Arrange
+            _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessMessage());
+            var message = new OutboxMessageBuilder().WitDto(new("My msg")).WithBodyType(null).Build();
+            _messageRepo.SetupGetMessagesToProcess(message);
+
+            //Act
+            await _sortingCenter.ForwardMessages();
+
+            //Assert
+            _messageRepo.AssertSaveChangesAsyncInvoked(Times.Once);
+            _messageRepo.AssertRemoveInvoked(message, Times.Never);
+            Assert.Multiple(
+                () =>
+                {
+                    Assert.That(message.State, Is.EqualTo(LightboxMessageState.Error));
+                    Assert.That(message.Error, Contains.Substring("System.InvalidOperationException: Сообщение 0 имеет тело, но не указан тип тела"));
+                });
+        }
+
+        [Test]
+        public async Task ForwardMessages_IllegalBodyType_MessageStateIsError()
+        {
+            //Arrange
+            _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessMessage());
+            var message = new OutboxMessageBuilder().WitDto(new("My msg")).WithBodyType("Illegal").Build();
+            _messageRepo.SetupGetMessagesToProcess(message);
+
+            //Act
+            await _sortingCenter.ForwardMessages();
+
+            //Assert
+            _messageRepo.AssertSaveChangesAsyncInvoked(Times.Once);
+            _messageRepo.AssertRemoveInvoked(message, Times.Never);
+            Assert.Multiple(
+                () =>
+                {
+                    Assert.That(message.State, Is.EqualTo(LightboxMessageState.Error));
+                    Assert.That(message.Error, Contains.Substring("System.InvalidOperationException: Сообщение 0 имеет недопустимый тип тела Illegal"));
+                });
+        }
+
+        #endregion
+
+        #region Передача параметров в стрелочника
+
+        [Test]
+        public async Task ForwardMessages_SubscriberHasCancellationToken_TokenIsProvided()
+        {
+            //Arrange
+            _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessWithToken(It.IsAny<CancellationToken>()));
+            var message = new OutboxMessageBuilder().Build();
+            _messageRepo.SetupGetMessagesToProcess(message);
+            using var tokenSource = new CancellationTokenSource();
+            Assume.That(_switchman.Token, Is.Null);
+
+            //Act
+            await _sortingCenter.ForwardMessages(token: tokenSource.Token);
+
+            //Assert
+            Assert.That(_switchman.Token, Is.EqualTo(tokenSource.Token));
+        }
+
+        [Test]
+        public async Task ForwardMessages_SubscriberHasDtoAndCancellationToken_DtoAndTokenProvided()
+        {
+            //Arrange
+            _switchmanCollection.SetupGet<TestSwitchman>(nameof(TestSwitchman.ProcessDtoWithToken));
+            var msg = "mymsg";
+            var message = new OutboxMessageBuilder().WitDto(new Dto(msg)).Build();
+            _messageRepo.SetupGetMessagesToProcess(message);
+            using var tokenSource = new CancellationTokenSource();
+            Assume.That(_switchman.Token, Is.Null);
+
+            //Act
+            await _sortingCenter.ForwardMessages(token: tokenSource.Token);
+
+            //Assert
+            Assert.Multiple(
+                () =>
+                {
+                    Assert.That(message.Error, Is.Null.Or.Empty);
+                    Assert.That(_switchman.Token, Is.EqualTo(tokenSource.Token));
+                    Assert.That(_switchman.Dto?.Msg, Is.EqualTo(msg));
+                });
+        }
+
+        [Test]
+        public async Task ForwardMessages_SubscriberHasDtoAndContextAndCancellationToken_DtoAndContextAndTokenProvided()
+        {
+            //Arrange
+            _switchmanCollection.SetupGet<TestSwitchman>(nameof(TestSwitchman.ProcessDtoContextToken));
+            var msg = "mymsg";
+            var message = new OutboxMessageBuilder().WitDto(new Dto(msg)).Build();
+            _messageRepo.SetupGetMessagesToProcess(message);
+            using var tokenSource = new CancellationTokenSource();
+            Assume.That(_switchman.Token, Is.Null);
+            Assume.That(_switchman.Context, Is.Null);
+            Assume.That(_switchman.Dto, Is.Null);
+
+            //Act
+            await _sortingCenter.ForwardMessages(token: tokenSource.Token);
+
+            //Assert
+            Assert.Multiple(
+                () =>
+                {
+                    Assert.That(message.Error, Is.Null.Or.Empty);
+                    Assert.That(_switchman.Token, Is.EqualTo(tokenSource.Token));
+                    Assert.That(_switchman.Dto?.Msg, Is.EqualTo(msg));
+                    Assert.That(_switchman.Context, Is.Not.Null);
+                    Assert.That(_switchman.Context?.MessageBody, Is.TypeOf<Dto>().With.Property(nameof(Dto.Msg)).EqualTo(msg));
+                });
+        }
+
+        [Test]
+        public async Task ForwardMessages_SubscriberHasContextAndCancellationToken_ContextAndTokenProvided()
+        {
+            //Arrange
+            _switchmanCollection.SetupGet<TestSwitchman>(nameof(TestSwitchman.ProcessContextToken));
+            var msg = "mymsg";
+            var message = new OutboxMessageBuilder().WitDto(new Dto(msg)).Build();
+            _messageRepo.SetupGetMessagesToProcess(message);
+            using var tokenSource = new CancellationTokenSource();
+            Assume.That(_switchman.Token, Is.Null);
+            Assume.That(_switchman.Context, Is.Null);
+            Assume.That(_switchman.Dto, Is.Null);
+
+            //Act
+            await _sortingCenter.ForwardMessages(token: tokenSource.Token);
+
+            //Assert
+            Assert.Multiple(
+                () =>
+                {
+                    Assert.That(message.Error, Is.Null.Or.Empty);
+                    Assert.That(_switchman.Token, Is.EqualTo(tokenSource.Token));
+                    Assert.That(_switchman.Dto, Is.Null);
+                    Assert.That(_switchman.Context, Is.Not.Null);
+                    Assert.That(_switchman.Context?.MessageBody, Is.TypeOf<Dto>().With.Property(nameof(Dto.Msg)).EqualTo(msg));
+                });
+        }
+
+        [Test]
+        public async Task ForwardMessages_SubscriberHasObjectParam_DtoProvided()
+        {
+            //Arrange
+            _switchmanCollection.SetupGet<TestSwitchman>(nameof(TestSwitchman.ProcessObject));
+            var msg = "mymsg";
+            var message = new OutboxMessageBuilder().WitDto(new Dto(msg)).Build();
+            _messageRepo.SetupGetMessagesToProcess(message);
+            using var tokenSource = new CancellationTokenSource();
+            Assume.That(_switchman.Token, Is.Null);
+            Assume.That(_switchman.Context, Is.Null);
+            Assume.That(_switchman.Dto, Is.Null);
+
+            //Act
+            await _sortingCenter.ForwardMessages(token: tokenSource.Token);
+
+            //Assert
+            Assert.Multiple(
+                () =>
+                {
+                    Assert.That(message.Error, Is.Null.Or.Empty);
+                    Assert.That(_switchman.Dto?.Msg, Is.EqualTo(msg));
+                });
+        }
+
+        [Test]
+        public async Task ForwardMessages_SubscriberHasIllegalParam_MessageError()
+        {
+            //Arrange
+            _switchmanCollection.SetupGet<TestSwitchman>(nameof(TestSwitchman.ProcessIllegalParam));
+            var msg = "mymsg";
+            var message = new OutboxMessageBuilder().WitDto(new Dto(msg)).Build();
+            _messageRepo.SetupGetMessagesToProcess(message);
+            using var tokenSource = new CancellationTokenSource();
+            Assume.That(_switchman.Token, Is.Null);
+            Assume.That(_switchman.Context, Is.Null);
+            Assume.That(_switchman.Dto, Is.Null);
+
+            //Act
+            await _sortingCenter.ForwardMessages(token: tokenSource.Token);
+
+            //Assert
+            Assert.That(message.Error, Contains.Substring("System.InvalidOperationException: Недопустимый тип параметра: System.String"));
         }
 
         #endregion

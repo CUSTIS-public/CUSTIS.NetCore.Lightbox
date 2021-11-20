@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Description>Microsoft Dependency Injection support for Lightbox.</Description>
+    <PackageDescription>Microsoft Dependency Injection support for Lightbox</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>

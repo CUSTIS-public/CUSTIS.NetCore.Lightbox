@@ -4,11 +4,8 @@ using System.Collections.Generic;
 namespace CUSTIS.NetCore.Lightbox.DependencyInjection
 {
     /// <summary> DI-контейнер, из которого Lightbox получает необходимые сервисы </summary>
-    public interface ILightboxServiceProvider
+    internal interface ILightboxServiceProvider
     {
-        /// <summary> Создать дочерний контейнер </summary>
-        ILightboxContainerScope CreateScope();
-
         /// <summary> Получить обязательный сервис </summary>
         object GetRequiredService(Type type);
 

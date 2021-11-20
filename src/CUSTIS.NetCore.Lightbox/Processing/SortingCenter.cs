@@ -84,22 +84,38 @@ namespace CUSTIS.NetCore.Lightbox.Processing
 
         private async Task ForwardMessage(ILightboxMessage message, CancellationToken token)
         {
-            var subscriberInfo = _switchmans.Get(message.MessageType);
+            var switchmanInfo = _switchmans.Get(message.MessageType);
 
-            var (parameters, msgBody) = GetParameters(subscriberInfo, message, token);
+            if (message.Body != null && string.IsNullOrEmpty(message.BodyType))
+            {
+                throw new InvalidOperationException($"Сообщение {message.Id} имеет тело, но не указан тип тела");
+            }
+
+            object? msgBody = null;
+            if (message.Body != null)
+            {
+                var bodyType = Type.GetType(message.BodyType);
+                if (bodyType == null)
+                {
+                    throw new InvalidOperationException($"Сообщение {message.Id} имеет недопустимый тип тела {message.BodyType} (не удалось найти соответствующий C#-тип)");
+                }
+
+                msgBody = JsonConvert.DeserializeObject(message.Body, bodyType);
+            }
+
             var headers = message.Headers != null
                               ? ExtendedJsonConvert.Deserialize<IReadOnlyDictionary<string, string>>(message.Headers)
                               : new Dictionary<string, string>();
-            var messageContext = new ForwardContext(message.Id, message.MessageType, message.AttemptCount,
+            var context = new ForwardContext(message.Id, message.MessageType, message.AttemptCount,
                                                     msgBody, message.Body, headers);
 
-            using var scope = _serviceProvider.CreateScope();
-            var serviceProvider = scope.ServiceProvider;
-            var subscriber = serviceProvider.GetRequiredService(subscriberInfo.SwitchmanType);
+            var parameters = GetParameters(switchmanInfo, context, token);
 
-            var messageFilters = serviceProvider.GetServices<IOutboxForwardFilter>().Reverse();
+            var subscriber = _serviceProvider.GetRequiredService(switchmanInfo.SwitchmanType);
 
-            ForwardDelegate forwardDelegate = (x, y) => InvokeSwitchman(subscriberInfo, subscriber, parameters);
+            var messageFilters = _serviceProvider.GetServices<IOutboxForwardFilter>().Reverse();
+
+            ForwardDelegate forwardDelegate = (x, y) => InvokeSwitchman(switchmanInfo, subscriber, parameters);
 
             foreach (var messageFilter in messageFilters)
             {
@@ -107,27 +123,20 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                 forwardDelegate = (context, t) => messageFilter.ForwardMessage(context, localDelegate, t);
             }
 
-            await forwardDelegate(messageContext, token);
+            await forwardDelegate(context, token);
         }
 
-        private static (List<object?>? parameters, object? msgBody) GetParameters(
-            SwitchmanInfo subscriberInfo, ILightboxMessage message, CancellationToken token)
+        private static List<object?>? GetParameters(
+            SwitchmanInfo subscriberInfo, ForwardContext context, CancellationToken token)
         {
             var parameterInfos = subscriberInfo.MethodInfo.GetParameters();
 
-            if (parameterInfos.Count(i => i.ParameterType != typeof(CancellationToken)) > 1)
-            {
-                throw new InvalidOperationException(
-                    $"Метод {subscriberInfo.MethodInfo.GetMemberName()} содержит 2 или более dto-параметров");
-            }
-
             if (parameterInfos.Length == 0)
             {
-                return (null, null);
+                return null;
             }
 
             var parameters = new List<object?>(parameterInfos.Length);
-            object? msgBody = null;
 
             foreach (var parameterInfo in parameterInfos)
             {
@@ -135,24 +144,27 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                 {
                     parameters.Add(token);
                 }
+                else if (parameterInfo.ParameterType == typeof(ForwardContext))
+                {
+                    parameters.Add(context);
+                }
+                else if (parameterInfo.ParameterType.IsAssignableFrom(context.MessageBody?.GetType()))
+                {
+                    parameters.Add(context.MessageBody);
+                }
                 else
                 {
-                    if (message.Body != null)
-                    {
-                        msgBody = JsonConvert.DeserializeObject(message.Body, parameterInfo.ParameterType);
-                    }
-
-                    parameters.Add(msgBody);
+                    throw new InvalidOperationException($"Недопустимый тип параметра: {parameterInfo.ParameterType}. Допустимы параметры типа {context.MessageBody?.GetType()}, {nameof(ForwardContext)}, {nameof(CancellationToken)}");
                 }
             }
 
-            return (parameters, msgBody);
+            return parameters;
         }
 
         private static async Task InvokeSwitchman(
-            SwitchmanInfo subscriberInfo, object subscriber, List<object?>? parameters)
+            SwitchmanInfo switchmanInfo, object switchman, List<object?>? parameters)
         {
-            var result = subscriberInfo.MethodInfo.Invoke(subscriber, parameters?.ToArray());
+            var result = switchmanInfo.MethodInfo.Invoke(switchman, parameters?.ToArray());
 
             if (result is Task task)
             {

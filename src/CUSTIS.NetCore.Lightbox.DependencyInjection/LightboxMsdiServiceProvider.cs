@@ -13,12 +13,6 @@ namespace CUSTIS.NetCore.Lightbox.DependencyInjection
             _serviceProvider = serviceProvider;
         }
 
-        /// <summary> Создать дочерний контейнер </summary>
-        public ILightboxContainerScope CreateScope()
-        {
-            return new LightboxMsdiScope(_serviceProvider.CreateScope());
-        }
-
         /// <summary> Получить обязательный сервис </summary>
         public object GetRequiredService(Type type)
         {

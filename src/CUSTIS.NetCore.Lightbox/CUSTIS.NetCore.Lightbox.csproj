@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Description>Легковесная реализация паттерна Outbox для .net core: отправляет сообщения, только если транзакция БД успешно завершена.</Description>
+    <Description>Lightweight implementaion of outbox pattern, which makes it available to send messages only when DB transaction is successfully commited.</Description>
+    <PackageDescription>Lightweight implementaion of outbox pattern, which makes it available to send messages only when DB transaction is successfully commited.</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>
