@@ -15,8 +15,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Msdi
         public void AddLightbox_AllServicesRegistered()
         {
             //Arrange
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton<ILightboxMessageRepository>(Mock.Of<ILightboxMessageRepository>());
+            var serviceCollection = PrepareServices();
 
             //Act
             serviceCollection.AddLightbox(Mock.Of<ILightboxOptions>());
@@ -29,12 +28,19 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Msdi
             });
         }
 
+        private static ServiceCollection PrepareServices()
+        {
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton<ILightboxMessageRepository>(Mock.Of<ILightboxMessageRepository>());
+
+            return serviceCollection;
+        }
+
         [Test]
         public void AddLightbox_MessageBoxObtained()
         {
             //Arrange
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton<ILightboxMessageRepository>(Mock.Of<ILightboxMessageRepository>());
+            var serviceCollection = PrepareServices();
 
             //Act
             serviceCollection.AddLightbox(Mock.Of<ILightboxOptions>());

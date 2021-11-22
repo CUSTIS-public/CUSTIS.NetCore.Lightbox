@@ -27,19 +27,19 @@ namespace CUSTIS.NetCore.Lightbox.Processing
 
         private readonly ILightboxOptions _lightboxOptions;
 
-        private readonly IForwardObserver? _forwardObserver;
+        private readonly IEnumerable<IForwardObserver> _forwardObservers;
 
         /// <summary> Обработчик сообщений </summary>
         public SortingCenter(
             ILightboxMessageRepository lightboxMessageRepository, ISwitchmanCollection switchmans,
             ILightboxServiceProvider serviceProvider, ILightboxOptions lightboxOptions,
-            IForwardObserver? forwardObserver = null)
+            IEnumerable<IForwardObserver>? forwardObservers = null)
         {
             _lightboxMessageRepository = lightboxMessageRepository;
             _switchmans = switchmans;
             _serviceProvider = serviceProvider;
             _lightboxOptions = lightboxOptions;
-            _forwardObserver = forwardObserver;
+            _forwardObservers = forwardObservers ?? Array.Empty<IForwardObserver>();
         }
 
         /// <summary> Перенаправить сообщения Outbox в системы-получатели </summary>
@@ -59,9 +59,9 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                 }
                 catch (Exception e)
                 {
-                    if (_forwardObserver != null)
+                    foreach (var forwardObserver in _forwardObservers)
                     {
-                        await _forwardObserver.ForwardFault(message, e, token);
+                        await forwardObserver.ForwardFault(message, e, token);
                     }
 
                     errors++;
@@ -120,7 +120,7 @@ namespace CUSTIS.NetCore.Lightbox.Processing
             foreach (var messageFilter in messageFilters)
             {
                 var localDelegate = forwardDelegate;
-                forwardDelegate = (context, t) => messageFilter.ForwardMessage(context, localDelegate, t);
+                forwardDelegate = (ctx, t) => messageFilter.ForwardMessage(ctx, localDelegate, t);
             }
 
             await forwardDelegate(context, token);
