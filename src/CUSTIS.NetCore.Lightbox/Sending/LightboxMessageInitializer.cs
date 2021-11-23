@@ -1,14 +1,22 @@
 using System.Linq;
 using CUSTIS.NetCore.Lightbox.DomainModel;
 using CUSTIS.NetCore.Lightbox.Filters;
-using Newtonsoft.Json;
+using CUSTIS.NetCore.Lightbox.Utils;
 
 namespace CUSTIS.NetCore.Lightbox.Sending
 {
-    /// <summary> Initializes lightbox messages </summary>
+    /// <summary> Заполняет поля сообщения Outbox </summary>
     internal class LightboxMessageInitializer : ILightboxMessageInitializer
     {
-        /// <summary> Initialize lightbox message according to data in <paramref name="context"/> </summary>
+        private readonly ExtendedJsonConvert _jsonConvert;
+
+        /// <summary> Заполняет поля сообщения Outbox </summary>
+        public LightboxMessageInitializer(ExtendedJsonConvert jsonConvert)
+        {
+            _jsonConvert = jsonConvert;
+        }
+
+        /// <summary> Заполняет поля сообщения Outbox </summary>
         public ILightboxMessage FillMessage(ILightboxMessage message, PutContext context)
         {
             message.MessageType = context.MessageType;
@@ -20,7 +28,7 @@ namespace CUSTIS.NetCore.Lightbox.Sending
 
             if (context.Headers.Any())
             {
-                message.Headers = JsonConvert.SerializeObject(context.Headers);
+                message.Headers = _jsonConvert.Serialize(context.Headers);
             }
 
             return message;

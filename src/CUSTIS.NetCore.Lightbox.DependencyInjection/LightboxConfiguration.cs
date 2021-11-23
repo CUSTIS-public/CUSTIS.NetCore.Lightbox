@@ -1,6 +1,7 @@
 using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Processing;
 using CUSTIS.NetCore.Lightbox.Sending;
+using CUSTIS.NetCore.Lightbox.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CUSTIS.NetCore.Lightbox.DependencyInjection
@@ -19,6 +20,7 @@ namespace CUSTIS.NetCore.Lightbox.DependencyInjection
             collection.AddScoped<ILightboxServiceProvider, LightboxMsdiServiceProvider>();
             collection.AddScoped<IMessageBox, MessageBox>();
             collection.AddSingleton<ILightboxMessageInitializer, LightboxMessageInitializer>();
+            collection.AddSingleton<ExtendedJsonConvert>();
 
             return collection;
         }

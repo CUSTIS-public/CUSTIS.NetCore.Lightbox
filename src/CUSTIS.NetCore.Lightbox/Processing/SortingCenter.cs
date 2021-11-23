@@ -10,7 +10,6 @@ using CUSTIS.NetCore.Lightbox.Filters;
 using CUSTIS.NetCore.Lightbox.Observers;
 using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Utils;
-using Newtonsoft.Json;
 
 namespace CUSTIS.NetCore.Lightbox.Processing
 {
@@ -27,18 +26,22 @@ namespace CUSTIS.NetCore.Lightbox.Processing
 
         private readonly ILightboxOptions _lightboxOptions;
 
+        private readonly ExtendedJsonConvert _jsonConvert;
+
         private readonly IEnumerable<IForwardObserver> _forwardObservers;
 
         /// <summary> Обработчик сообщений </summary>
         public SortingCenter(
             ILightboxMessageRepository lightboxMessageRepository, ISwitchmanCollection switchmans,
             ILightboxServiceProvider serviceProvider, ILightboxOptions lightboxOptions,
+            ExtendedJsonConvert jsonConvert,
             IEnumerable<IForwardObserver>? forwardObservers = null)
         {
             _lightboxMessageRepository = lightboxMessageRepository;
             _switchmans = switchmans;
             _serviceProvider = serviceProvider;
             _lightboxOptions = lightboxOptions;
+            _jsonConvert = jsonConvert;
             _forwardObservers = forwardObservers ?? Array.Empty<IForwardObserver>();
         }
 
@@ -54,7 +57,7 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                 try
                 {
                     await ForwardMessage(message, token);
-                    _lightboxMessageRepository.Remove(message);
+                    await _lightboxMessageRepository.Remove(message);
                     success++;
                 }
                 catch (Exception e)
@@ -72,7 +75,12 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                     if (_lightboxOptions.MaxAttemptsErrorStrategy == MaxAttemptsErrorStrategy.Delete
                         && message.AttemptCount > _lightboxOptions.MaxAttemptsCount)
                     {
-                        _lightboxMessageRepository.Remove(message);
+                        foreach (var forwardObserver in _forwardObservers)
+                        {
+                            await forwardObserver.DeleteDueToMaxAttempts(message, token);
+                        }
+
+                        await _lightboxMessageRepository.Remove(message);
                     }
                 }
             }
@@ -100,11 +108,11 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                     throw new InvalidOperationException($"Сообщение {message.Id} имеет недопустимый тип тела {message.BodyType} (не удалось найти соответствующий C#-тип)");
                 }
 
-                msgBody = JsonConvert.DeserializeObject(message.Body, bodyType);
+                msgBody = _jsonConvert.Deserialize(message.Body, bodyType);
             }
 
             var headers = message.Headers != null
-                              ? ExtendedJsonConvert.Deserialize<IReadOnlyDictionary<string, string>>(message.Headers)
+                              ? _jsonConvert.Deserialize<IReadOnlyDictionary<string, string>>(message.Headers)
                               : new Dictionary<string, string>();
             var context = new ForwardContext(message.Id, message.MessageType, message.AttemptCount,
                                                     msgBody, message.Body, headers);

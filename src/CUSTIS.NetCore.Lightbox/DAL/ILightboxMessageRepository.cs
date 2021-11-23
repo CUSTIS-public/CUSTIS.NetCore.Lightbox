@@ -15,9 +15,9 @@ namespace CUSTIS.NetCore.Lightbox.DAL
         Task<IReadOnlyCollection<ILightboxMessage>> GetMessagesToForward(int batchCount, CancellationToken token);
 
         /// <summary> Удалить сообщение </summary>
-        void Remove(ILightboxMessage message);
+        Task Remove(ILightboxMessage message);
 
         /// <summary> Пробрасывает изменения в БД</summary>
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

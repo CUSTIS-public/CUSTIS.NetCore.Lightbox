@@ -7,6 +7,8 @@ using CUSTIS.NetCore.Lightbox.Filters;
 using CUSTIS.NetCore.Lightbox.Sending;
 using CUSTIS.NetCore.Lightbox.UnitTests.Common;
 using CUSTIS.NetCore.Lightbox.UnitTests.Mocks;
+using CUSTIS.NetCore.Lightbox.UnitTests.TestServices;
+using CUSTIS.NetCore.Lightbox.Utils;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -107,7 +109,9 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
 
         private static MessageBox CreateMessageBox(params IOutboxPutFilter[] putFilters)
         {
-            return new MessageBox(Repo.Object, putFilters, new LightboxMessageInitializer());
+            var jsonConvert = new ExtendedJsonConvert(new OutboxJsonConvert());
+
+            return new MessageBox(Repo.Object, putFilters, new LightboxMessageInitializer(jsonConvert), jsonConvert);
         }
 
         [Test]

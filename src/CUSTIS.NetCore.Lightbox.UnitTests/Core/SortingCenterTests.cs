@@ -8,6 +8,8 @@ using CUSTIS.NetCore.Lightbox.Processing;
 using CUSTIS.NetCore.Lightbox.UnitTests.Builders;
 using CUSTIS.NetCore.Lightbox.UnitTests.Common;
 using CUSTIS.NetCore.Lightbox.UnitTests.Mocks;
+using CUSTIS.NetCore.Lightbox.UnitTests.TestServices;
+using CUSTIS.NetCore.Lightbox.Utils;
 using Moq;
 using NUnit.Framework;
 
@@ -40,7 +42,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
         {
             return new(
                 _messageRepo.Object, _switchmanCollection.Object,
-                _serviceProvider.Object, lightboxOptions);
+                _serviceProvider.Object, lightboxOptions, new ExtendedJsonConvert(new OutboxJsonConvert()));
         }
 
         [SetUp]

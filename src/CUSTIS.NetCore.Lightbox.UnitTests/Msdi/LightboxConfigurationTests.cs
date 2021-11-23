@@ -3,6 +3,7 @@ using CUSTIS.NetCore.Lightbox.DependencyInjection;
 using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Processing;
 using CUSTIS.NetCore.Lightbox.Sending;
+using CUSTIS.NetCore.Lightbox.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
@@ -31,7 +32,8 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Msdi
         private static ServiceCollection PrepareServices()
         {
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton<ILightboxMessageRepository>(Mock.Of<ILightboxMessageRepository>());
+            serviceCollection.AddSingleton(Mock.Of<ILightboxMessageRepository>());
+            serviceCollection.AddSingleton(Mock.Of<IJsonConvert>());
 
             return serviceCollection;
         }
@@ -55,8 +57,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Msdi
         public void AddLightbox_SortingCenterObtained()
         {
             //Arrange
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton<ILightboxMessageRepository>(Mock.Of<ILightboxMessageRepository>());
+            var serviceCollection = PrepareServices();
 
             //Act
             serviceCollection.AddLightbox(Mock.Of<ILightboxOptions>());

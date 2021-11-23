@@ -3,6 +3,7 @@ using CUSTIS.NetCore.Lightbox.DependencyInjection;
 using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Processing;
 using CUSTIS.NetCore.Lightbox.Sending;
+using CUSTIS.NetCore.Lightbox.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Practices.Unity;
 using Moq;
@@ -29,7 +30,8 @@ namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests
         private static UnityContainer PrepareContainer()
         {
             var container = new UnityContainer();
-            container.AddSingleton<ILightboxMessageRepository>(Mock.Of<ILightboxMessageRepository>());
+            container.AddSingleton(Mock.Of<ILightboxMessageRepository>());
+            container.AddSingleton(Mock.Of<IJsonConvert>());
 
             return container;
         }

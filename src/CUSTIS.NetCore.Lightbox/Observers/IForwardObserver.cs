@@ -5,10 +5,13 @@ using CUSTIS.NetCore.Lightbox.DomainModel;
 
 namespace CUSTIS.NetCore.Lightbox.Observers
 {
-    /// <summary> Observer of message forwarding </summary>
+    /// <summary> Наблюдает за пересылкой сообщений </summary>
     public interface IForwardObserver
     {
-        /// <summary> Called when exception occurred during while message forwarding </summary>
+        /// <summary> Вызывается, если при пересылке возникло исключение </summary>
         Task ForwardFault(ILightboxMessage message, Exception exception, CancellationToken token);
+
+        /// <summary> Вызывается, если требуется удаление сообщения при достижении максимальной попытки обработки </summary>
+        Task DeleteDueToMaxAttempts(ILightboxMessage message, CancellationToken token);
     }
 }

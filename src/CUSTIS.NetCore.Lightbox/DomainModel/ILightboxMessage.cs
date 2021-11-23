@@ -1,5 +1,3 @@
-using System;
-
 namespace CUSTIS.NetCore.Lightbox.DomainModel
 {
     /// <summary> Сообщение </summary>

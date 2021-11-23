@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CUSTIS.NetCore.Lightbox.DAL;
 using CUSTIS.NetCore.Lightbox.Filters;
-using Newtonsoft.Json;
+using CUSTIS.NetCore.Lightbox.Utils;
 
 namespace CUSTIS.NetCore.Lightbox.Sending
 {
@@ -15,14 +15,17 @@ namespace CUSTIS.NetCore.Lightbox.Sending
 
         private readonly ILightboxMessageInitializer _messageInitializer;
 
+        private readonly ExtendedJsonConvert _jsonConvert;
+
         private readonly IReadOnlyCollection<IOutboxPutFilter> _putFilters;
 
         /// <summary> Отправитель сообщений </summary>
         public MessageBox(ILightboxMessageRepository lightboxMessageRepository, IEnumerable<IOutboxPutFilter> putFilters,
-                          ILightboxMessageInitializer messageInitializer)
+                          ILightboxMessageInitializer messageInitializer, ExtendedJsonConvert jsonConvert)
         {
             _lightboxMessageRepository = lightboxMessageRepository;
             _messageInitializer = messageInitializer;
+            _jsonConvert = jsonConvert;
             _putFilters = putFilters.Reverse().ToArray();
         }
 
@@ -40,7 +43,7 @@ namespace CUSTIS.NetCore.Lightbox.Sending
             string? serializedBody = null;
             if (dto is { })
             {
-                serializedBody = JsonConvert.SerializeObject(dto);
+                serializedBody = _jsonConvert.Serialize(dto);
             }
 
             var putContext = new PutContext(messageType, dto, serializedBody, new Dictionary<string, string>());

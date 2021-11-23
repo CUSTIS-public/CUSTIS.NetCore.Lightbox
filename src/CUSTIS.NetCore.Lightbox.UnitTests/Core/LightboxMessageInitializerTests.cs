@@ -4,6 +4,8 @@ using CUSTIS.NetCore.Lightbox.DomainModel;
 using CUSTIS.NetCore.Lightbox.Filters;
 using CUSTIS.NetCore.Lightbox.Sending;
 using CUSTIS.NetCore.Lightbox.UnitTests.Common;
+using CUSTIS.NetCore.Lightbox.UnitTests.TestServices;
+using CUSTIS.NetCore.Lightbox.Utils;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -11,17 +13,24 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
 {
     public class LightboxMessageInitializerTests
     {
+        private LightboxMessageInitializer _messageCreator = null!;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _messageCreator = new LightboxMessageInitializer(new ExtendedJsonConvert(new OutboxJsonConvert()));
+        }
+
         [Test]
         public void CreateMessage_SimpleCase_PropertiesFilledCorrect()
         {
             //Arrange
-            var messageCreator = new LightboxMessageInitializer();
             var headers = new Dictionary<string, string> { { "h", "v" } };
             PutContext putContext = new("type", new object(), "serialized", headers);
             var message = new LightboxMessage();
 
             //Act
-            var outboxMessage = messageCreator.FillMessage(message, putContext);
+            var outboxMessage = _messageCreator.FillMessage(message, putContext);
 
             //Assert
             Assert.Multiple(
@@ -41,14 +50,13 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
         public void CreateMessage_SimpleCase_BodyTypeCanBeObtained()
         {
             //Arrange
-            var messageCreator = new LightboxMessageInitializer();
             var headers = new Dictionary<string, string>();
             var messageBody = new Dto("msg");
             PutContext putContext = new("type", messageBody, "serialized", headers);
             var message = new LightboxMessage();
 
             //Act
-            var outboxMessage = messageCreator.FillMessage(message, putContext);
+            var outboxMessage = _messageCreator.FillMessage(message, putContext);
 
             //Assert
             Assert.Multiple(

@@ -1,37 +1,50 @@
 using System;
-using Newtonsoft.Json;
 
 namespace CUSTIS.NetCore.Lightbox.Utils
 {
     /// <summary> Расширенный JsonConvert </summary>
-    internal static class ExtendedJsonConvert
+    internal class ExtendedJsonConvert
     {
+        private readonly IJsonConvert _jsonConvert;
+
+        /// <summary> Расширенный JsonConvert </summary>
+        public ExtendedJsonConvert(IJsonConvert jsonConvert)
+        {
+            _jsonConvert = jsonConvert;
+        }
+
         /// <summary> Десериализовать или кинуть Exception</summary>
-        public static T Deserialize<T>(string value)
+        public object Deserialize(string value, Type type)
         {
             try
             {
-                var obj = JsonConvert.DeserializeObject<T>(value);
+                var obj = _jsonConvert.Deserialize(value, type);
 
                 if (obj is null)
                 {
-                    throw new InvalidOperationException($"Не удалось десериализовать строку {value} в объект типа {typeof(T)}");
+                    throw new InvalidOperationException($"Не удалось десериализовать строку {value} в объект типа {type}");
                 }
 
                 return obj;
             }
             catch (Exception e)
             {
-                throw new InvalidOperationException($"Не удалось десериализовать строку {value} в объект типа {typeof(T)}", e);
+                throw new InvalidOperationException($"Не удалось десериализовать строку {value} в объект типа {type}", e);
             }
         }
 
+        /// <summary> Десериализовать или кинуть Exception</summary>
+        public T Deserialize<T>(string value)
+        {
+            return (T)Deserialize(value, typeof(T));
+        }
+
         /// <summary> Сериализовать или кинуть Exception</summary>
-        public static string Serialize<T>(T value)
+        public string Serialize<T>(T value)
         {
             try
             {
-                return JsonConvert.SerializeObject(value);
+                return _jsonConvert.Serialize(value);
             }
             catch (Exception e)
             {
