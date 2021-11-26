@@ -9,7 +9,12 @@ namespace CUSTIS.NetCore.Lightbox.DAL
     public interface ILightboxMessageRepository
     {
         /// <summary> Создать сообщение </summary>
+        /// <remarks> Создать сообщение без добавления в сессию NH / контекст EF </remarks>
         Task<ILightboxMessage> Create(CancellationToken token);
+
+        /// <summary> Сохранить сообщение </summary>
+        /// <remarks> Добить сообщение в сессию NH / контекст EF </remarks>
+        Task Save(ILightboxMessage message, CancellationToken token);
 
         /// <summary> Получить сообщения для обработки </summary>
         Task<IReadOnlyCollection<ILightboxMessage>> GetMessagesToForward(int batchCount, CancellationToken token);

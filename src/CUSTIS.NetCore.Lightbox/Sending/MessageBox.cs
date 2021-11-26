@@ -54,6 +54,7 @@ namespace CUSTIS.NetCore.Lightbox.Sending
         {
             var message = await _lightboxMessageRepository.Create(token);
             _messageInitializer.FillMessage(message, context);
+            await _lightboxMessageRepository.Save(message, token);
         }
     }
 }
