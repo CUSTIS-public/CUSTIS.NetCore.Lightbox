@@ -4,10 +4,8 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Common
 {
     internal class MultiArgSwitchman : ISwitchman
     {
-        public const string MessageType = "msg";
-
-        [Switchman(MessageType)]
-        public void ProcessMessage(Dto dto, string s)
+        [Switchman(nameof(ProcessTwoArgs))]
+        public void ProcessTwoArgs(Dto dto, string s)
         {
         }
     }

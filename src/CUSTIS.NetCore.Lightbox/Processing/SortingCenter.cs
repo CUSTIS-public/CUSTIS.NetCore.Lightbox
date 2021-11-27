@@ -28,13 +28,15 @@ namespace CUSTIS.NetCore.Lightbox.Processing
 
         private readonly ExtendedJsonConvert _jsonConvert;
 
+        private readonly TypeLoader _typeLoader;
+
         private readonly IEnumerable<IForwardObserver> _forwardObservers;
 
         /// <summary> Обработчик сообщений </summary>
         public SortingCenter(
             ILightboxMessageRepository lightboxMessageRepository, ISwitchmanCollection switchmans,
             ILightboxServiceProvider serviceProvider, ILightboxOptions lightboxOptions,
-            ExtendedJsonConvert jsonConvert,
+            ExtendedJsonConvert jsonConvert, TypeLoader typeLoader,
             IEnumerable<IForwardObserver>? forwardObservers = null)
         {
             _lightboxMessageRepository = lightboxMessageRepository;
@@ -42,6 +44,7 @@ namespace CUSTIS.NetCore.Lightbox.Processing
             _serviceProvider = serviceProvider;
             _lightboxOptions = lightboxOptions;
             _jsonConvert = jsonConvert;
+            _typeLoader = typeLoader;
             _forwardObservers = forwardObservers ?? Array.Empty<IForwardObserver>();
         }
 
@@ -102,12 +105,7 @@ namespace CUSTIS.NetCore.Lightbox.Processing
             object? msgBody = null;
             if (message.Body != null)
             {
-                var bodyType = Type.GetType(message.BodyType);
-                if (bodyType == null)
-                {
-                    throw new InvalidOperationException($"Сообщение {message.Id} имеет недопустимый тип тела {message.BodyType} (не удалось найти соответствующий C#-тип)");
-                }
-
+                var bodyType = _typeLoader.RetrieveType(message.BodyType!);
                 msgBody = _jsonConvert.Deserialize(message.Body, bodyType);
             }
 

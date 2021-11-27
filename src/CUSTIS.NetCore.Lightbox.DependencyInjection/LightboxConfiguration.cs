@@ -21,6 +21,7 @@ namespace CUSTIS.NetCore.Lightbox.DependencyInjection
             collection.AddScoped<IMessageBox, MessageBox>();
             collection.AddSingleton<ILightboxMessageInitializer, LightboxMessageInitializer>();
             collection.AddSingleton<ExtendedJsonConvert>();
+            collection.AddSingleton<TypeLoader>();
 
             return collection;
         }

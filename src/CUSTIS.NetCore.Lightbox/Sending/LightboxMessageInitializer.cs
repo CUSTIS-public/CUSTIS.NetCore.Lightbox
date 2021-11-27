@@ -21,7 +21,7 @@ namespace CUSTIS.NetCore.Lightbox.Sending
         {
             message.MessageType = context.MessageType;
             message.Body = context.SerializedBody;
-            message.BodyType = context.MessageBody?.GetType().AssemblyQualifiedName;
+            message.BodyType = context.MessageBody?.GetType().FullName;
             message.State = LightboxMessageState.Created;
             message.AttemptCount = 0;
             message.Error = null;

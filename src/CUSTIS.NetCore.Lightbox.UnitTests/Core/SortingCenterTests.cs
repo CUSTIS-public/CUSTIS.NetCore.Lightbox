@@ -42,7 +42,8 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
         {
             return new(
                 _messageRepo.Object, _switchmanCollection.Object,
-                _serviceProvider.Object, lightboxOptions, new ExtendedJsonConvert(new OutboxJsonConvert()));
+                _serviceProvider.Object, lightboxOptions, new ExtendedJsonConvert(new OutboxJsonConvert()),
+                new TypeLoader());
         }
 
         [SetUp]
@@ -382,7 +383,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
                 () =>
                 {
                     Assert.That(message.State, Is.EqualTo(LightboxMessageState.Error));
-                    Assert.That(message.Error, Contains.Substring("System.InvalidOperationException: Сообщение 0 имеет недопустимый тип тела Illegal"));
+                    Assert.That(message.Error, Contains.Substring("System.ArgumentException: Type Illegal doesn't exist in the current app domain"));
                 });
         }
 

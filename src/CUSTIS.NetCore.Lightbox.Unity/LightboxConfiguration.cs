@@ -4,6 +4,7 @@ using CUSTIS.NetCore.Lightbox.Observers;
 using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Processing;
 using CUSTIS.NetCore.Lightbox.Sending;
+using CUSTIS.NetCore.Lightbox.Utils;
 using Microsoft.Practices.Unity;
 
 namespace CUSTIS.NetCore.Lightbox.DependencyInjection
@@ -27,6 +28,8 @@ namespace CUSTIS.NetCore.Lightbox.DependencyInjection
                 new InjectionFactory(c => c.ResolveAll<IOutboxPutFilter>()));
             container.RegisterType<IEnumerable<IForwardObserver>>(
                 new InjectionFactory(c => c.ResolveAll<IForwardObserver>()));
+
+            container.AddSingleton<TypeLoader>();
 
             return container;
         }

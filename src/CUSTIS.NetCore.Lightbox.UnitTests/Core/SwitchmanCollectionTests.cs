@@ -83,7 +83,20 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             Assert.That(
                 () => new SwitchmanCollection(new[] { switchmanType, }),
                 Throws.Exception.With.Message.EqualTo(
-                    "В методах-стрелочниках допустимо использовать не более 1 dto-аргумента. Ошибочные методы: [MultiArgSwitchman.ProcessMessage]"));
+                    "В методах-стрелочниках допустимо использовать не более 1 dto-аргумента. Ошибочные методы: [MultiArgSwitchman.ProcessTwoArgs]"));
+        }
+
+        [Test]
+        public void Ctor_SwitchmanWithDtoContextTokenArgs_CollectionCreated()
+        {
+            //Arrange
+            var switchmanType = new SwitchmanType(typeof(ISwitchman), typeof(DtoContextTokenSwitchman));
+
+            //Act
+            var collection = new SwitchmanCollection(new[] { switchmanType, });
+
+            //Assert
+            Assert.Pass("Конструктор не должен бросить исключения");
         }
     }
 }

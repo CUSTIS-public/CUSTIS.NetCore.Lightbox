@@ -3,22 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using CUSTIS.NetCore.Lightbox.Filters;
 using CUSTIS.NetCore.Lightbox.Utils;
 
 namespace CUSTIS.NetCore.Lightbox.Processing
 {
     internal class SwitchmanValidator
     {
-        private readonly List<MethodInfo> _manyArgsMethods = new List<MethodInfo>();
-        private readonly List<MethodInfo> _asyncVoidMethods = new List<MethodInfo>();
-        private readonly List<string> _longMessageTypes = new List<string>();
+        private readonly List<MethodInfo> _manyArgsMethods = new();
+        private readonly List<MethodInfo> _asyncVoidMethods = new();
         private IGrouping<string, SwitchmanInfo>[]? _ambiguousSubscribers;
+
+        private static readonly Type[] AuxParamTypes = { typeof(CancellationToken), typeof(ForwardContext) };
 
         public bool Validate(MethodInfo methodInfo, SwitchmanAttribute switchmanAttribute)
         {
             var valid = true;
 
-            if (methodInfo.GetParameters().Count(p => p.ParameterType != typeof(CancellationToken)) > 1)
+            if (methodInfo.GetParameters().Count(p => !AuxParamTypes.Contains(p.ParameterType)) > 1)
             {
                 _manyArgsMethods.Add(methodInfo);
                 valid = false;

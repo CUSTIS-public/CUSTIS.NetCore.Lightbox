@@ -38,7 +38,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
                 {
                     Assert.That(outboxMessage.MessageType, Is.EqualTo(putContext.MessageType));
                     Assert.That(outboxMessage.Body, Is.EqualTo(putContext.SerializedBody));
-                    Assert.That(outboxMessage.BodyType, Is.EqualTo(putContext.MessageBody!.GetType().AssemblyQualifiedName));
+                    Assert.That(outboxMessage.BodyType, Is.EqualTo(putContext.MessageBody!.GetType().FullName));
                     Assert.That(outboxMessage.Headers, Is.EqualTo(JsonConvert.SerializeObject(headers)));
                     Assert.That(outboxMessage.State, Is.EqualTo(LightboxMessageState.Created));
                     Assert.That(outboxMessage.Error, Is.Null.Or.Empty);
@@ -62,7 +62,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             Assert.Multiple(
                 () =>
                 {
-                    Assert.That(outboxMessage.BodyType, Is.EqualTo(putContext.MessageBody!.GetType().AssemblyQualifiedName));
+                    Assert.That(outboxMessage.BodyType, Is.EqualTo(putContext.MessageBody!.GetType().FullName));
                     Assert.That(Type.GetType(outboxMessage.BodyType!), Is.EqualTo(messageBody.GetType()));
                 });
         }

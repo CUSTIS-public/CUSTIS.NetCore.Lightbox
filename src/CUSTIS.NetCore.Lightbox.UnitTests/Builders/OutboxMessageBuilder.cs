@@ -49,7 +49,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Builders
         public OutboxMessageBuilder WitDto(Dto dto)
         {
             _dto = dto;
-            _bodyType = dto.GetType().AssemblyQualifiedName;
+            _bodyType = dto.GetType().FullName;
 
             return this;
         }
