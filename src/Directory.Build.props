@@ -1,6 +1,7 @@
 <!--
     Общие свойства всех проектов. Подключаются автоматически к любой новой сборке в составе решения.
 -->
+
 <Project>
     <PropertyGroup>
         <RepositoryUrl>https://git.custis.ru/pub/lightbox</RepositoryUrl>
