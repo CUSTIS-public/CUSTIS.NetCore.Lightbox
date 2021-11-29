@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Generic;
+using CUSTIS.NetCore.Lightbox.DependencyInjection;
 using Microsoft.Practices.Unity;
 
-namespace CUSTIS.NetCore.Lightbox.DependencyInjection
+namespace CUSTIS.NetCore.Lightbox.Unity
 {
     internal class LightboxUnityServiceProvider : ILightboxServiceProvider
     {
@@ -24,12 +24,6 @@ namespace CUSTIS.NetCore.Lightbox.DependencyInjection
             }
 
             return service;
-        }
-
-        /// <summary> Получить сервисы </summary>
-        public IEnumerable<T> GetServices<T>()
-        {
-            return _unityContainer.ResolveAll<T>();
         }
     }
 }

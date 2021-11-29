@@ -30,13 +30,16 @@ namespace CUSTIS.NetCore.Lightbox.Processing
 
         private readonly TypeLoader _typeLoader;
 
-        private readonly IEnumerable<IForwardObserver> _forwardObservers;
+        private readonly IOutboxForwardFilter[] _forwardFilters;
+
+        private readonly IForwardObserver[] _forwardObservers;
 
         /// <summary> Обработчик сообщений </summary>
         public SortingCenter(
             ILightboxMessageRepository lightboxMessageRepository, ISwitchmanCollection switchmans,
             ILightboxServiceProvider serviceProvider, ILightboxOptions lightboxOptions,
             ExtendedJsonConvert jsonConvert, TypeLoader typeLoader,
+            IEnumerable<IOutboxForwardFilter> forwardFilters,
             IEnumerable<IForwardObserver>? forwardObservers = null)
         {
             _lightboxMessageRepository = lightboxMessageRepository;
@@ -45,7 +48,9 @@ namespace CUSTIS.NetCore.Lightbox.Processing
             _lightboxOptions = lightboxOptions;
             _jsonConvert = jsonConvert;
             _typeLoader = typeLoader;
-            _forwardObservers = forwardObservers ?? Array.Empty<IForwardObserver>();
+            // делаем reverse, чтобы в конце концов фильтры применились в том же порядке, в котором были зарегистрированы в контейнере
+            _forwardFilters = forwardFilters.Reverse().ToArray();
+            _forwardObservers = forwardObservers?.ToArray() ?? Array.Empty<IForwardObserver>();
         }
 
         /// <summary> Перенаправить сообщения Outbox в системы-получатели </summary>
@@ -119,14 +124,12 @@ namespace CUSTIS.NetCore.Lightbox.Processing
 
             var subscriber = _serviceProvider.GetRequiredService(switchmanInfo.SwitchmanType);
 
-            var messageFilters = _serviceProvider.GetServices<IOutboxForwardFilter>().Reverse();
-
             ForwardDelegate forwardDelegate = (x, y) => InvokeSwitchman(switchmanInfo, subscriber, parameters);
 
-            foreach (var messageFilter in messageFilters)
+            foreach (var forwardFilter in _forwardFilters)
             {
                 var localDelegate = forwardDelegate;
-                forwardDelegate = (ctx, t) => messageFilter.ForwardMessage(ctx, localDelegate, t);
+                forwardDelegate = (ctx, t) => forwardFilter.ForwardMessage(ctx, localDelegate, t);
             }
 
             await forwardDelegate(context, token);

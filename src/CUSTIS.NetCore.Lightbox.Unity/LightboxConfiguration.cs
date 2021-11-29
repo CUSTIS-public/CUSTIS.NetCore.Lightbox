@@ -4,6 +4,7 @@ using CUSTIS.NetCore.Lightbox.Observers;
 using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Processing;
 using CUSTIS.NetCore.Lightbox.Sending;
+using CUSTIS.NetCore.Lightbox.Unity;
 using CUSTIS.NetCore.Lightbox.Utils;
 using Microsoft.Practices.Unity;
 
@@ -26,12 +27,41 @@ namespace CUSTIS.NetCore.Lightbox.DependencyInjection
 
             container.RegisterType<IEnumerable<IOutboxPutFilter>>(
                 new InjectionFactory(c => c.ResolveAll<IOutboxPutFilter>()));
+            container.RegisterType<IEnumerable<IOutboxForwardFilter>>(
+                new InjectionFactory(c => c.ResolveAll<IOutboxForwardFilter>()));
             container.RegisterType<IEnumerable<IForwardObserver>>(
                 new InjectionFactory(c => c.ResolveAll<IForwardObserver>()));
 
             container.AddSingleton<TypeLoader>();
 
             return container;
+        }
+
+        /// <summary> Добавить фильтр </summary>
+        public static void AddPutFilter<T>(this UnityContainer container, LifetimeManager lifetimeManager)
+            where T : IOutboxPutFilter
+        {
+            // Фильтров может быть много, поэтому их надо регистрировать с именем,
+            // поскольку ResolveAll<T> получает только именованные сервисы вида T
+            container.RegisterType<IOutboxPutFilter, T>(typeof(T).FullName, lifetimeManager);
+        }
+
+        /// <summary> Добавить фильтр </summary>
+        public static void AddForwardFilter<T>(this UnityContainer container, LifetimeManager lifetimeManager)
+            where T : IOutboxForwardFilter
+        {
+            // Фильтров может быть много, поэтому их надо регистрировать с именем,
+            // поскольку ResolveAll<T> получает только именованные сервисы вида T
+            container.RegisterType<IOutboxForwardFilter, T>(typeof(T).FullName, lifetimeManager);
+        }
+
+        /// <summary> Добавить фильтр </summary>
+        public static void AddForwardObserver<T>(this UnityContainer container, LifetimeManager lifetimeManager)
+            where T : IForwardObserver
+        {
+            // Фильтров может быть много, поэтому их надо регистрировать с именем,
+            // поскольку ResolveAll<T> получает только именованные сервисы вида T
+            container.RegisterType<IForwardObserver, T>(typeof(T).FullName, lifetimeManager);
         }
 
         internal static void AddSingleton<T>(this IUnityContainer container)

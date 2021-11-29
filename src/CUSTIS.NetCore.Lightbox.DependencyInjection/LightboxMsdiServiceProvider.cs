@@ -18,11 +18,5 @@ namespace CUSTIS.NetCore.Lightbox.DependencyInjection
         {
             return _serviceProvider.GetRequiredService(type);
         }
-
-        /// <summary> Получить сервисы </summary>
-        public IEnumerable<T> GetServices<T>()
-        {
-            return _serviceProvider.GetServices<T>();
-        }
     }
 }
