@@ -17,7 +17,11 @@ namespace CUSTIS.NetCore.Lightbox.DAL
         Task Save(ILightboxMessage message, CancellationToken token);
 
         /// <summary> Получить сообщения для обработки </summary>
-        Task<IReadOnlyCollection<ILightboxMessage>> GetMessagesToForward(int batchCount, CancellationToken token);
+        /// <param name="batchCount">Кол-во сообщений, которые требуется получить</param>
+        /// <param name="maxAttemptsCount">Максимально допустимое значение поля <see cref="ILightboxMessage.AttemptCount"/></param>
+        /// <param name="moduleName">Имя модуля (для случая, когда на одной БД работает несколько модулей)</param>
+        /// <param name="token">Токен отмены</param>
+        Task<IReadOnlyCollection<ILightboxMessage>> GetMessagesToForward(int batchCount, long maxAttemptsCount, string? moduleName, CancellationToken token);
 
         /// <summary> Удалить сообщение </summary>
         Task Remove(ILightboxMessage message);

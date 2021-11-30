@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using CUSTIS.NetCore.Lightbox.DomainModel;
 using CUSTIS.NetCore.Lightbox.Filters;
+using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Sending;
 using CUSTIS.NetCore.Lightbox.UnitTests.Common;
 using CUSTIS.NetCore.Lightbox.UnitTests.TestServices;
 using CUSTIS.NetCore.Lightbox.Utils;
+using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -15,10 +18,13 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
     {
         private LightboxMessageInitializer _messageCreator = null!;
 
+        private Mock<ILightboxOptions> _options = null!;
+
         [SetUp]
         public void SetUp()
         {
-            _messageCreator = new LightboxMessageInitializer(new ExtendedJsonConvert(new OutboxJsonConvert()));
+            _options = new Mock<ILightboxOptions>();
+            _messageCreator = new LightboxMessageInitializer(new ExtendedJsonConvert(new OutboxJsonConvert()), _options.Object);
         }
 
         [Test]
@@ -44,6 +50,22 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
                     Assert.That(outboxMessage.Error, Is.Null.Or.Empty);
                     Assert.That(outboxMessage.AttemptCount, Is.EqualTo(0));
                 });
+        }
+
+        [TestCase(null)]
+        [TestCase("asd")]
+        public void CreateMessage_CorrectModuleName(string? moduleName)
+        {
+            //Arrange
+            PutContext putContext = new("type", new object(), "serialized", ImmutableDictionary<string, string>.Empty);
+            _options.Setup(o => o.ModuleName).Returns(moduleName);
+            var message = new LightboxMessage();
+
+            //Act
+            var outboxMessage = _messageCreator.FillMessage(message, putContext);
+
+            //Assert
+            Assert.That(outboxMessage.ModuleName, Is.EqualTo(moduleName));
         }
 
         [Test]

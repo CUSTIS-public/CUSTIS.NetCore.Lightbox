@@ -10,7 +10,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Mocks
 {
     internal sealed class MessageRepoMock : MockSkeleton<ILightboxMessageRepository>
     {
-        private readonly List<ILightboxMessage> _createdMessages = new List<ILightboxMessage>();
+        private readonly List<ILightboxMessage> _createdMessages = new();
 
         public IReadOnlyCollection<ILightboxMessage> CreatedMessages => _createdMessages;
 
@@ -35,10 +35,36 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Mocks
                     });
         }
 
-        public void SetupGetMessagesToProcess(ILightboxMessage message)
+        public void SetupGetMessagesToForward(ILightboxMessage message)
         {
-            Mock.Setup(r => r.GetMessagesToForward(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            Mock.Setup(r => r.GetMessagesToForward(It.IsAny<int>(), It.IsAny<long>(), It.IsAny<string?>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ReadOnlyCollection<ILightboxMessage>(new[] { message }));
+        }
+
+        public class GetMessagesToForwardParams
+        {
+            public int BatchCount { get; set; }
+
+            public long MaxAttemptsCount { get; set; }
+
+            public string? ModuleName { get; set; }
+        }
+
+        public void SetupGetMessagesToForward(out GetMessagesToForwardParams forwardParams)
+        {
+            var internalParams = new GetMessagesToForwardParams();
+
+            Mock.Setup(r => r.GetMessagesToForward(It.IsAny<int>(), It.IsAny<long>(), It.IsAny<string?>(), It.IsAny<CancellationToken>()))
+                .Callback(
+                    (int batchCount, long maxAttemptsCount, string? moduleName, CancellationToken token) =>
+                    {
+                        internalParams.BatchCount = batchCount;
+                        internalParams.MaxAttemptsCount = maxAttemptsCount;
+                        internalParams.ModuleName = moduleName;
+                    })
+                .ReturnsAsync(Array.Empty<ILightboxMessage>());
+
+            forwardParams = internalParams;
         }
 
         public void AssertRemoveInvoked(ILightboxMessage message, Func<Times> times)

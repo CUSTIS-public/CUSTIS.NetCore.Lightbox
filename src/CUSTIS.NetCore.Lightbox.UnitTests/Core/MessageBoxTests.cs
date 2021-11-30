@@ -4,11 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using ApprovalUtilities.Utilities;
 using CUSTIS.NetCore.Lightbox.Filters;
+using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Sending;
 using CUSTIS.NetCore.Lightbox.UnitTests.Common;
 using CUSTIS.NetCore.Lightbox.UnitTests.Mocks;
 using CUSTIS.NetCore.Lightbox.UnitTests.TestServices;
 using CUSTIS.NetCore.Lightbox.Utils;
+using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -111,7 +113,9 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
         {
             var jsonConvert = new ExtendedJsonConvert(new OutboxJsonConvert());
 
-            return new MessageBox(Repo.Object, putFilters, new LightboxMessageInitializer(jsonConvert), jsonConvert);
+            var initializer = new LightboxMessageInitializer(jsonConvert, Mock.Of<ILightboxOptions>());
+
+            return new MessageBox(Repo.Object, putFilters, initializer, jsonConvert);
         }
 
         [Test]

@@ -56,7 +56,8 @@ namespace CUSTIS.NetCore.Lightbox.Processing
         /// <summary> Перенаправить сообщения Outbox в системы-получатели </summary>
         public async Task<ForwardResult> ForwardMessages(int? batchCount = null, CancellationToken token = default)
         {
-            var messages = await _lightboxMessageRepository.GetMessagesToForward(batchCount ?? DefaultBatchCount, token);
+            var messages = await _lightboxMessageRepository.GetMessagesToForward(batchCount ?? DefaultBatchCount,
+                               _lightboxOptions.MaxAttemptsCount, _lightboxOptions.ModuleName, token);
             var success = 0;
             var errors = 0;
 

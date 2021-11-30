@@ -32,20 +32,21 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
 
         private SortingCenter _sortingCenter = default!;
 
-        private ILightboxOptions _outboxOptions = default!;
+        private Mock<ILightboxOptions> _outboxOptions = default!;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _outboxOptions = Mock.Of<ILightboxOptions>(o => o.MaxAttemptsCount == MaxAttempts);
+            _outboxOptions = new Mock<ILightboxOptions>();
+            _outboxOptions.Setup(o => o.MaxAttemptsCount).Returns(MaxAttempts);
             _sortingCenter = CreateSortingCenter(_outboxOptions);
         }
 
-        private SortingCenter CreateSortingCenter(ILightboxOptions lightboxOptions, params IOutboxForwardFilter[] forwardFilters)
+        private SortingCenter CreateSortingCenter(Mock<ILightboxOptions> lightboxOptions, params IOutboxForwardFilter[] forwardFilters)
         {
             return new(
                 _messageRepo.Object, _switchmanCollection.Object,
-                _serviceProvider.Object, lightboxOptions, new ExtendedJsonConvert(new OutboxJsonConvert()),
+                _serviceProvider.Object, lightboxOptions.Object, new ExtendedJsonConvert(new OutboxJsonConvert()),
                 new TypeLoader(), forwardFilters);
         }
 
@@ -69,7 +70,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessMessage());
             var message = new OutboxMessageBuilder().Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
 
             //Act
             await _sortingCenter.ForwardMessages();
@@ -89,11 +90,11 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ThrowError());
             var message = new OutboxMessageBuilder().WithAttemptCount(MaxAttempts).Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             var options = Mock.Of<ILightboxOptions>(
                 o => o.MaxAttemptsCount == MaxAttempts
                      && o.MaxAttemptsErrorStrategy == MaxAttemptsErrorStrategy.Delete);
-            var sortingCenter = CreateSortingCenter(options);
+            var sortingCenter = CreateSortingCenter(Mock.Get(options));
 
             //Act
             await sortingCenter.ForwardMessages();
@@ -109,11 +110,11 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ThrowError());
             var message = new OutboxMessageBuilder().WithAttemptCount(MaxAttempts).Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             var options = Mock.Of<ILightboxOptions>(
                 o => o.MaxAttemptsCount == MaxAttempts
                      && o.MaxAttemptsErrorStrategy == MaxAttemptsErrorStrategy.Retain);
-            var sortingCenter = CreateSortingCenter(options);
+            var sortingCenter = CreateSortingCenter(Mock.Get(options));
 
             //Act
             await sortingCenter.ForwardMessages();
@@ -129,7 +130,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ThrowError());
             var message = new OutboxMessageBuilder().Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
 
             //Act
             await _sortingCenter.ForwardMessages();
@@ -150,7 +151,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ThrowError());
             var message = new OutboxMessageBuilder().Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             Assume.That(message.AttemptCount, Is.EqualTo(0));
 
             //Act
@@ -170,7 +171,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessAsync());
             var message = new OutboxMessageBuilder().Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
 
             //Act
             await _sortingCenter.ForwardMessages();
@@ -190,7 +191,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessAsyncWithResult());
             var message = new OutboxMessageBuilder().Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
 
             //Act
             await _sortingCenter.ForwardMessages();
@@ -236,7 +237,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessMessage());
             var message = new OutboxMessageBuilder().Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             var testFilter = new TestFilter();
             var sortingCenter = CreateSortingCenter(_outboxOptions, testFilter);
             var testSwitchman = new TestSwitchman();
@@ -260,7 +261,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessMessage());
             var message = new OutboxMessageBuilder().Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             var testFilter = new TestFilter();
             var testFilter2 = new TestFilter();
             var sortingCenter = CreateSortingCenter(_outboxOptions, testFilter, testFilter2);
@@ -286,7 +287,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessMessage());
             var message = new OutboxMessageBuilder().Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             var testFilter = new TestFilter { Name = "F1" };
             var testFilter2 = new TestFilter { Name = "F2" };
             var order = testFilter.Order = testFilter2.Order = new Dictionary<string, long>();
@@ -330,7 +331,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessMessage());
             var initialHeaders = new Dictionary<string, string>() { { "k", "v" }, { "kk", "vv" } };
             var message = new OutboxMessageBuilder().WithHeaders(initialHeaders).Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             var filter = new HeadersFilter();
             var sortingCenter = CreateSortingCenter(_outboxOptions, filter);
 
@@ -351,7 +352,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessMessage());
             var message = new OutboxMessageBuilder().WitDto(new("My msg")).WithBodyType(null).Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
 
             //Act
             await _sortingCenter.ForwardMessages();
@@ -373,7 +374,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessMessage());
             var message = new OutboxMessageBuilder().WitDto(new("My msg")).WithBodyType("Illegal").Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
 
             //Act
             await _sortingCenter.ForwardMessages();
@@ -399,7 +400,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             //Arrange
             _switchmanCollection.SetupGet<TestSwitchman>(s => s.ProcessWithToken(It.IsAny<CancellationToken>()));
             var message = new OutboxMessageBuilder().Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             using var tokenSource = new CancellationTokenSource();
             Assume.That(_switchman.Token, Is.Null);
 
@@ -417,7 +418,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             _switchmanCollection.SetupGet<TestSwitchman>(nameof(TestSwitchman.ProcessDtoWithToken));
             var msg = "mymsg";
             var message = new OutboxMessageBuilder().WitDto(new Dto(msg)).Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             using var tokenSource = new CancellationTokenSource();
             Assume.That(_switchman.Token, Is.Null);
 
@@ -441,7 +442,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             _switchmanCollection.SetupGet<TestSwitchman>(nameof(TestSwitchman.ProcessDtoContextToken));
             var msg = "mymsg";
             var message = new OutboxMessageBuilder().WitDto(new Dto(msg)).Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             using var tokenSource = new CancellationTokenSource();
             Assume.That(_switchman.Token, Is.Null);
             Assume.That(_switchman.Context, Is.Null);
@@ -469,7 +470,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             _switchmanCollection.SetupGet<TestSwitchman>(nameof(TestSwitchman.ProcessContextToken));
             var msg = "mymsg";
             var message = new OutboxMessageBuilder().WitDto(new Dto(msg)).Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             using var tokenSource = new CancellationTokenSource();
             Assume.That(_switchman.Token, Is.Null);
             Assume.That(_switchman.Context, Is.Null);
@@ -497,7 +498,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             _switchmanCollection.SetupGet<TestSwitchman>(nameof(TestSwitchman.ProcessObject));
             var msg = "mymsg";
             var message = new OutboxMessageBuilder().WitDto(new Dto(msg)).Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             using var tokenSource = new CancellationTokenSource();
             Assume.That(_switchman.Token, Is.Null);
             Assume.That(_switchman.Context, Is.Null);
@@ -522,7 +523,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             _switchmanCollection.SetupGet<TestSwitchman>(nameof(TestSwitchman.ProcessIllegalParam));
             var msg = "mymsg";
             var message = new OutboxMessageBuilder().WitDto(new Dto(msg)).Build();
-            _messageRepo.SetupGetMessagesToProcess(message);
+            _messageRepo.SetupGetMessagesToForward(message);
             using var tokenSource = new CancellationTokenSource();
             Assume.That(_switchman.Token, Is.Null);
             Assume.That(_switchman.Context, Is.Null);
@@ -536,5 +537,30 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
         }
 
         #endregion
+
+        [Test]
+        public async Task ForwardMessages_GetMessagesInvokedWithCorrectParams()
+        {
+            //Arrange
+            using var tokenSource = new CancellationTokenSource();
+            var moduleName = "name";
+            var maxAttempts = 1;
+            var batchCount = 2;
+            _outboxOptions.Setup(o => o.ModuleName).Returns(moduleName);
+            _outboxOptions.Setup(o => o.MaxAttemptsCount).Returns(maxAttempts);
+            _messageRepo.SetupGetMessagesToForward(out var forwardParams);
+
+            //Act
+            await _sortingCenter.ForwardMessages(batchCount, tokenSource.Token);
+
+            //Assert
+            Assert.Multiple(
+                () =>
+                {
+                    Assert.That(forwardParams.ModuleName, Is.EqualTo(moduleName));
+                    Assert.That(forwardParams.MaxAttemptsCount, Is.EqualTo(maxAttempts));
+                    Assert.That(forwardParams.BatchCount, Is.EqualTo(batchCount));
+                });
+        }
     }
 }

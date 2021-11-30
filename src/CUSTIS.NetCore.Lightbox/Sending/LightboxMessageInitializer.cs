@@ -1,6 +1,7 @@
 using System.Linq;
 using CUSTIS.NetCore.Lightbox.DomainModel;
 using CUSTIS.NetCore.Lightbox.Filters;
+using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Utils;
 
 namespace CUSTIS.NetCore.Lightbox.Sending
@@ -10,10 +11,13 @@ namespace CUSTIS.NetCore.Lightbox.Sending
     {
         private readonly ExtendedJsonConvert _jsonConvert;
 
+        private readonly ILightboxOptions _options;
+
         /// <summary> Заполняет поля сообщения Outbox </summary>
-        public LightboxMessageInitializer(ExtendedJsonConvert jsonConvert)
+        public LightboxMessageInitializer(ExtendedJsonConvert jsonConvert, ILightboxOptions options)
         {
             _jsonConvert = jsonConvert;
+            _options = options;
         }
 
         /// <summary> Заполняет поля сообщения Outbox </summary>
@@ -25,6 +29,7 @@ namespace CUSTIS.NetCore.Lightbox.Sending
             message.State = LightboxMessageState.Created;
             message.AttemptCount = 0;
             message.Error = null;
+            message.ModuleName = _options.ModuleName;
 
             if (context.Headers.Any())
             {

@@ -9,6 +9,10 @@ namespace CUSTIS.NetCore.Lightbox.DomainModel
         /// <summary> Тип сообщения </summary>
         public string MessageType { get; set; }
 
+        /// <summary> Имя модуля </summary>
+        /// <remarks> Для случая, когда через одну БД работают несколько модулей </remarks>
+        public string? ModuleName { get; set; }
+
         /// <summary> Заголовки </summary>
         /// <remarks> Сериализованный словарь ключ-значение </remarks>
         public string? Headers { get; set; }
