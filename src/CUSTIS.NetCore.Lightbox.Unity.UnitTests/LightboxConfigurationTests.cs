@@ -22,14 +22,15 @@ namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests
         {
             TestPutFilter.Reset();
             TestPutFilter2.Reset();
-            TestForwardFilter.Reset();
         }
+
+        #region Проверяем достаточность регистраций зависимостей
 
         [Test]
         public void AddLightbox_MessageBoxObtained()
         {
             //Arrange
-            var container = PrepareContainer();
+            var container = ContainerBuilder.PrepareContainer();
 
             //Act
             container.AddLightbox(Mock.Of<ILightboxOptions>());
@@ -39,20 +40,11 @@ namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests
             Assert.That(messageBox, Is.Not.Null);
         }
 
-        private static UnityContainer PrepareContainer()
-        {
-            var container = new UnityContainer();
-            container.AddSingleton(Mock.Of<ILightboxMessageRepository>());
-            container.AddSingleton(Mock.Of<IJsonConvert>());
-
-            return container;
-        }
-
         [Test]
         public void AddLightbox_SortingCenterObtained()
         {
             //Arrange
-            var container = PrepareContainer();
+            var container = ContainerBuilder.PrepareContainer();
 
             //Act
             container.AddLightbox(Mock.Of<ILightboxOptions>());
@@ -62,11 +54,15 @@ namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests
             Assert.That(sortingCenter, Is.Not.Null);
         }
 
+        #endregion
+
+        #region Фильтры
+
         [Test]
         public void AddPutFilter_HasOnePutFilter_PutFilterInvoked()
         {
             //Arrange
-            var container = PrepareContainer();
+            var container = ContainerBuilder.PrepareContainer();
             container.AddLightbox(Mock.Of<ILightboxOptions>());
 
             //Act
@@ -87,7 +83,7 @@ namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests
         public void AddPutFilter_HasManyPutFilters_PutFiltersInvoked()
         {
             //Arrange
-            var container = PrepareContainer();
+            var container = ContainerBuilder.PrepareContainer();
             container.AddLightbox(Mock.Of<ILightboxOptions>());
 
             //Act
@@ -110,7 +106,7 @@ namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests
         public void AddForwardFilter_ForwardFiltersResolvedAsIEnumerable()
         {
             //Arrange
-            var container = PrepareContainer();
+            var container = ContainerBuilder.PrepareContainer();
             container.AddLightbox(Mock.Of<ILightboxOptions>());
 
             //Act
@@ -125,7 +121,7 @@ namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests
         public void AddForwardObserver_ForwardObserversResolvedAsIEnumerable()
         {
             //Arrange
-            var container = PrepareContainer();
+            var container = ContainerBuilder.PrepareContainer();
             container.AddLightbox(Mock.Of<ILightboxOptions>());
 
             //Act
@@ -135,5 +131,7 @@ namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests
             //Assert
             Assert.That(container.ResolveAll<IForwardObserver>().Count(), Is.EqualTo(2));
         }
+
+        #endregion
     }
 }

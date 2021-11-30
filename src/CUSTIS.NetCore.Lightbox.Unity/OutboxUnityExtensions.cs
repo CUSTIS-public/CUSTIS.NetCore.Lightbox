@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using CUSTIS.NetCore.Lightbox.Processing;
 using Microsoft.Practices.Unity;
 
-namespace CUSTIS.NetCore.Lightbox.DependencyInjection
+namespace CUSTIS.NetCore.Lightbox.Unity
 {
     internal static class OutboxUnityExtensions
     {

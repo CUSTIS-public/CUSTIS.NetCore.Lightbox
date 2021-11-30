@@ -1,21 +1,22 @@
 using System.Collections.Generic;
+using CUSTIS.NetCore.Lightbox.DependencyInjection;
 using CUSTIS.NetCore.Lightbox.Filters;
 using CUSTIS.NetCore.Lightbox.Observers;
 using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Processing;
 using CUSTIS.NetCore.Lightbox.Sending;
-using CUSTIS.NetCore.Lightbox.Unity;
 using CUSTIS.NetCore.Lightbox.Utils;
 using Microsoft.Practices.Unity;
 
-namespace CUSTIS.NetCore.Lightbox.DependencyInjection
+namespace CUSTIS.NetCore.Lightbox.Unity
 {
     /// <summary> Методы для конфигурирования приложения для работы с паттерном Outbox </summary>
     public static class LightboxConfiguration
     {
         /// <summary> Добавить сервисы, необходимые для работы Outbox </summary>
         /// <remarks> Перед вызовом <see cref="AddLightbox(IUnityContainer,ILightboxOptions)"/> необходимо зарегистрировать
-        /// всех <see cref="ISwitchman"/> в <paramref name="container"/> </remarks>
+        /// всех <see cref="ISwitchman"/>, <see cref="IOutboxPutFilter"/>, <see cref="IOutboxForwardFilter"/>,
+        /// <see cref="IForwardObserver"/> в <paramref name="container"/> </remarks>
         public static IUnityContainer AddLightbox(this IUnityContainer container, ILightboxOptions outboxOptions)
         {
             container.AddSingleton(outboxOptions);
@@ -33,6 +34,8 @@ namespace CUSTIS.NetCore.Lightbox.DependencyInjection
                 new InjectionFactory(c => c.ResolveAll<IForwardObserver>()));
 
             container.AddSingleton<TypeLoader>();
+
+            new UnityValidator().Validate(container);
 
             return container;
         }

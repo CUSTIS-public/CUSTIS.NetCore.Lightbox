@@ -13,11 +13,5 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Mocks
             Mock.Setup(s => s.GetRequiredService(typeof(T)))
                 .Returns(service);
         }
-
-        /// <summary> Настроить метод <see cref="ServiceProviderServiceExtensions.GetServices"/> </summary>
-        public void SetupGetServices<T>(params T[] services) where T : class
-        {
-            Mock.Setup(s => s.GetServices<T>()).Returns(services);
-        }
     }
 }

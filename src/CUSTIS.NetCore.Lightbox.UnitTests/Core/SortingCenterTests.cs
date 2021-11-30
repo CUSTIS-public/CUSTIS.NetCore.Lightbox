@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,19 +32,21 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
 
         private SortingCenter _sortingCenter = default!;
 
+        private ILightboxOptions _outboxOptions = default!;
+
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            var outboxOptions = Mock.Of<ILightboxOptions>(o => o.MaxAttemptsCount == MaxAttempts);
-            _sortingCenter = CreateSortingCenter(outboxOptions);
+            _outboxOptions = Mock.Of<ILightboxOptions>(o => o.MaxAttemptsCount == MaxAttempts);
+            _sortingCenter = CreateSortingCenter(_outboxOptions);
         }
 
-        private SortingCenter CreateSortingCenter(ILightboxOptions lightboxOptions)
+        private SortingCenter CreateSortingCenter(ILightboxOptions lightboxOptions, params IOutboxForwardFilter[] forwardFilters)
         {
             return new(
                 _messageRepo.Object, _switchmanCollection.Object,
                 _serviceProvider.Object, lightboxOptions, new ExtendedJsonConvert(new OutboxJsonConvert()),
-                new TypeLoader());
+                new TypeLoader(), forwardFilters);
         }
 
         [SetUp]
@@ -53,7 +56,6 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             _switchmanCollection.Reset();
             _switchman.Reset();
             _serviceProvider.Reset();
-            _serviceProvider.SetupGetServices<IOutboxForwardFilter>();
             _serviceProvider.SetupGetService(_switchman);
         }
 
@@ -236,12 +238,12 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             var message = new OutboxMessageBuilder().Build();
             _messageRepo.SetupGetMessagesToProcess(message);
             var testFilter = new TestFilter();
-            _serviceProvider.SetupGetServices<IOutboxForwardFilter>(testFilter);
+            var sortingCenter = CreateSortingCenter(_outboxOptions, testFilter);
             var testSwitchman = new TestSwitchman();
             _serviceProvider.SetupGetService(testSwitchman);
 
             //Act
-            await _sortingCenter.ForwardMessages();
+            await sortingCenter.ForwardMessages();
 
             //Assert
             Assert.Multiple(
@@ -261,12 +263,12 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             _messageRepo.SetupGetMessagesToProcess(message);
             var testFilter = new TestFilter();
             var testFilter2 = new TestFilter();
-            _serviceProvider.SetupGetServices<IOutboxForwardFilter>(testFilter, testFilter2);
+            var sortingCenter = CreateSortingCenter(_outboxOptions, testFilter, testFilter2);
             var testSwitchman = new TestSwitchman();
             _serviceProvider.SetupGetService(testSwitchman);
 
             //Act
-            await _sortingCenter.ForwardMessages();
+            await sortingCenter.ForwardMessages();
 
             //Assert
             Assert.Multiple(
@@ -288,12 +290,12 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             var testFilter = new TestFilter { Name = "F1" };
             var testFilter2 = new TestFilter { Name = "F2" };
             var order = testFilter.Order = testFilter2.Order = new Dictionary<string, long>();
-            _serviceProvider.SetupGetServices<IOutboxForwardFilter>(testFilter, testFilter2);
+            var sortingCenter = CreateSortingCenter(_outboxOptions, testFilter, testFilter2);
             var testSwitchman = new TestSwitchman();
             _serviceProvider.SetupGetService(testSwitchman);
 
             //Act
-            await _sortingCenter.ForwardMessages();
+            await sortingCenter.ForwardMessages();
 
             //Assert
             Assert.Multiple(
@@ -330,10 +332,10 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
             var message = new OutboxMessageBuilder().WithHeaders(initialHeaders).Build();
             _messageRepo.SetupGetMessagesToProcess(message);
             var filter = new HeadersFilter();
-            _serviceProvider.SetupGetServices<IOutboxForwardFilter>(filter);
+            var sortingCenter = CreateSortingCenter(_outboxOptions, filter);
 
             //Act
-            await _sortingCenter.ForwardMessages();
+            await sortingCenter.ForwardMessages();
 
             //Assert
             Assert.That(filter.Headers, Is.EquivalentTo(initialHeaders));
