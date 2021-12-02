@@ -4,10 +4,10 @@
 
 <Project>
     <PropertyGroup>
-        <RepositoryUrl>https://git.custis.ru/pub/lightbox</RepositoryUrl>
-        <PackageProjectUrl>https://git.custis.ru/pub/lightbox</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/CUSTIS-public/CUSTIS.NetCore.Lightbox</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/CUSTIS-public/CUSTIS.NetCore.Lightbox</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
-        <Version>1.0.13</Version>
+        <Version>1.0.14</Version>
         <Authors>ishatalkin@custis.ru</Authors>
         <Company>CUSTIS</Company>
         <Copyright>Copyright © 2018, 2020-2021 CUSTIS</Copyright>
