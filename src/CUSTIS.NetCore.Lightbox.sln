@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CUSTIS.NetCore.Lightbox.Uni
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CUSTIS.NetCore.Lightbox.Unity.UnitTests", "CUSTIS.NetCore.Lightbox.Unity.UnitTests\CUSTIS.NetCore.Lightbox.Unity.UnitTests.csproj", "{6F36F6BB-FAAF-4236-BA20-7FE2B6DE05C7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CUSTIS.NetCore.Lightbox.TestsBase", "CUSTIS.NetCore.Lightbox.TestsBase\CUSTIS.NetCore.Lightbox.TestsBase.csproj", "{F840699B-B970-428A-958F-B41E463B0A8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{6F36F6BB-FAAF-4236-BA20-7FE2B6DE05C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F36F6BB-FAAF-4236-BA20-7FE2B6DE05C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F36F6BB-FAAF-4236-BA20-7FE2B6DE05C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F840699B-B970-428A-958F-B41E463B0A8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F840699B-B970-428A-958F-B41E463B0A8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F840699B-B970-428A-958F-B41E463B0A8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F840699B-B970-428A-958F-B41E463B0A8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

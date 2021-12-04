@@ -7,11 +7,12 @@
         <RepositoryUrl>https://github.com/CUSTIS-public/CUSTIS.NetCore.Lightbox</RepositoryUrl>
         <PackageProjectUrl>https://github.com/CUSTIS-public/CUSTIS.NetCore.Lightbox</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
-        <Version>1.0.14</Version>
+        <Version>1.0.15</Version>
         <Authors>ishatalkin@custis.ru</Authors>
         <Company>CUSTIS</Company>
         <Copyright>Copyright © 2018, 2020-2021 CUSTIS</Copyright>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
     <ItemGroup>
         <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>

@@ -5,7 +5,6 @@
       <LangVersion>9.0</LangVersion>
       <Description>Lightweight implementaion of outbox pattern, which makes it available to send messages only when DB transaction is successfully commited.</Description>
     <PackageDescription>Lightweight implementaion of outbox pattern, which makes it available to send messages only when DB transaction is successfully commited.</PackageDescription>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
 </Project>

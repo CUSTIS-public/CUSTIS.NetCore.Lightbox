@@ -10,7 +10,7 @@ namespace CUSTIS.NetCore.Lightbox.Options
         MaxAttemptsErrorStrategy MaxAttemptsErrorStrategy { get; }
 
         /// <summary> Имя модуля </summary>
-        /// <remarks> Для случая, когда через одну БД работают несколько модулей </remarks>
+        /// <remarks> Для случая, когда через одну таблицу работают несколько модулей </remarks>
         string? ModuleName { get; }
     }
 }
