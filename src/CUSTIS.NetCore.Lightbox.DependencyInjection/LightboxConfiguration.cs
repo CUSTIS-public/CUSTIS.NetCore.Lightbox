@@ -20,7 +20,7 @@ namespace CUSTIS.NetCore.Lightbox.DependencyInjection
             collection.AddScoped<ILightboxServiceProvider, LightboxMsdiServiceProvider>();
             collection.AddScoped<IMessageBox, MessageBox>();
             collection.AddSingleton<ILightboxMessageInitializer, LightboxMessageInitializer>();
-            collection.AddSingleton<ExtendedJsonConvert>();
+            collection.AddSingleton<FriendlySerializer>();
             collection.AddSingleton<TypeLoader>();
 
             return collection;

@@ -15,17 +15,17 @@ namespace CUSTIS.NetCore.Lightbox.Sending
 
         private readonly ILightboxMessageInitializer _messageInitializer;
 
-        private readonly ExtendedJsonConvert _jsonConvert;
+        private readonly FriendlySerializer _serializer;
 
         private readonly IReadOnlyCollection<IOutboxPutFilter> _putFilters;
 
         /// <summary> Отправитель сообщений </summary>
         public MessageBox(ILightboxMessageRepository lightboxMessageRepository, IEnumerable<IOutboxPutFilter> putFilters,
-                          ILightboxMessageInitializer messageInitializer, ExtendedJsonConvert jsonConvert)
+                          ILightboxMessageInitializer messageInitializer, FriendlySerializer serializer)
         {
             _lightboxMessageRepository = lightboxMessageRepository;
             _messageInitializer = messageInitializer;
-            _jsonConvert = jsonConvert;
+            _serializer = serializer;
             _putFilters = putFilters.Reverse().ToArray();
         }
 
@@ -43,7 +43,7 @@ namespace CUSTIS.NetCore.Lightbox.Sending
             string? serializedBody = null;
             if (dto is { })
             {
-                serializedBody = _jsonConvert.Serialize(dto);
+                serializedBody = _serializer.Serialize(dto);
             }
 
             var putContext = new PutContext(messageType, dto, serializedBody, new Dictionary<string, string>());

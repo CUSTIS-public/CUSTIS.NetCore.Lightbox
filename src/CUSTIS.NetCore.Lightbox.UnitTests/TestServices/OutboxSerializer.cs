@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace CUSTIS.NetCore.Lightbox.UnitTests.TestServices
 {
-    public class OutboxJsonConvert : IJsonConvert
+    public class OutboxSerializer : ISerializer
     {
         /// <summary> Десериализовать </summary>
         public object? Deserialize(string value, Type type)

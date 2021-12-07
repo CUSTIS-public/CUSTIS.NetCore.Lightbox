@@ -24,7 +24,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
         public void SetUp()
         {
             _options = new Mock<ILightboxOptions>();
-            _messageCreator = new LightboxMessageInitializer(new ExtendedJsonConvert(new OutboxJsonConvert()), _options.Object);
+            _messageCreator = new LightboxMessageInitializer(new FriendlySerializer(new OutboxSerializer()), _options.Object);
         }
 
         [Test]

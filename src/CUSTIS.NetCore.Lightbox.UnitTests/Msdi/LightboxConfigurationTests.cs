@@ -33,7 +33,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Msdi
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddSingleton(Mock.Of<ILightboxMessageRepository>());
-            serviceCollection.AddSingleton(Mock.Of<IJsonConvert>());
+            serviceCollection.AddSingleton(Mock.Of<ISerializer>());
 
             return serviceCollection;
         }

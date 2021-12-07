@@ -11,7 +11,7 @@ namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests.Common
         {
             var container = new UnityContainer();
             container.AddSingleton(Mock.Of<ILightboxMessageRepository>());
-            container.AddSingleton(Mock.Of<IJsonConvert>());
+            container.AddSingleton(Mock.Of<ISerializer>());
 
             return container;
         }

@@ -26,7 +26,7 @@ namespace CUSTIS.NetCore.Lightbox.Processing
 
         private readonly ILightboxOptions _lightboxOptions;
 
-        private readonly ExtendedJsonConvert _jsonConvert;
+        private readonly FriendlySerializer _serializer;
 
         private readonly TypeLoader _typeLoader;
 
@@ -38,7 +38,7 @@ namespace CUSTIS.NetCore.Lightbox.Processing
         public SortingCenter(
             ILightboxMessageRepository lightboxMessageRepository, ISwitchmanCollection switchmans,
             ILightboxServiceProvider serviceProvider, ILightboxOptions lightboxOptions,
-            ExtendedJsonConvert jsonConvert, TypeLoader typeLoader,
+            FriendlySerializer serializer, TypeLoader typeLoader,
             IEnumerable<IOutboxForwardFilter> forwardFilters,
             IEnumerable<IForwardObserver>? forwardObservers = null)
         {
@@ -46,7 +46,7 @@ namespace CUSTIS.NetCore.Lightbox.Processing
             _switchmans = switchmans;
             _serviceProvider = serviceProvider;
             _lightboxOptions = lightboxOptions;
-            _jsonConvert = jsonConvert;
+            _serializer = serializer;
             _typeLoader = typeLoader;
             // делаем reverse, чтобы в конце концов фильтры применились в том же порядке, в котором были зарегистрированы в контейнере
             _forwardFilters = forwardFilters.Reverse().ToArray();
@@ -112,11 +112,11 @@ namespace CUSTIS.NetCore.Lightbox.Processing
             if (message.Body != null)
             {
                 var bodyType = _typeLoader.RetrieveType(message.BodyType!);
-                msgBody = _jsonConvert.Deserialize(message.Body, bodyType);
+                msgBody = _serializer.Deserialize(message.Body, bodyType);
             }
 
             var headers = message.Headers != null
-                              ? _jsonConvert.Deserialize<IReadOnlyDictionary<string, string>>(message.Headers)
+                              ? _serializer.Deserialize<IReadOnlyDictionary<string, string>>(message.Headers)
                               : new Dictionary<string, string>();
             var context = new ForwardContext(message.Id, message.MessageType, message.AttemptCount,
                                                     msgBody, message.Body, headers);

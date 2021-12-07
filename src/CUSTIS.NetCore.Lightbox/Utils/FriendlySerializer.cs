@@ -2,15 +2,15 @@ using System;
 
 namespace CUSTIS.NetCore.Lightbox.Utils
 {
-    /// <summary> Расширенный JsonConvert </summary>
-    internal class ExtendedJsonConvert
+    /// <summary> Сериализатор, который кидает понятные разработчику исключения </summary>
+    internal class FriendlySerializer
     {
-        private readonly IJsonConvert _jsonConvert;
+        private readonly ISerializer _serializer;
 
-        /// <summary> Расширенный JsonConvert </summary>
-        public ExtendedJsonConvert(IJsonConvert jsonConvert)
+        /// <summary> Сериализатор, который кидает понятные разработчику исключения </summary>
+        public FriendlySerializer(ISerializer serializer)
         {
-            _jsonConvert = jsonConvert;
+            _serializer = serializer;
         }
 
         /// <summary> Десериализовать или кинуть Exception</summary>
@@ -18,7 +18,7 @@ namespace CUSTIS.NetCore.Lightbox.Utils
         {
             try
             {
-                var obj = _jsonConvert.Deserialize(value, type);
+                var obj = _serializer.Deserialize(value, type);
 
                 if (obj is null)
                 {
@@ -44,7 +44,7 @@ namespace CUSTIS.NetCore.Lightbox.Utils
         {
             try
             {
-                return _jsonConvert.Serialize(value);
+                return _serializer.Serialize(value);
             }
             catch (Exception e)
             {

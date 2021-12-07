@@ -111,7 +111,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
 
         private static MessageBox CreateMessageBox(params IOutboxPutFilter[] putFilters)
         {
-            var jsonConvert = new ExtendedJsonConvert(new OutboxJsonConvert());
+            var jsonConvert = new FriendlySerializer(new OutboxSerializer());
 
             var initializer = new LightboxMessageInitializer(jsonConvert, Mock.Of<ILightboxOptions>());
 

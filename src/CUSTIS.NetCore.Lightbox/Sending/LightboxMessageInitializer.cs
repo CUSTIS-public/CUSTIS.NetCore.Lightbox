@@ -9,14 +9,14 @@ namespace CUSTIS.NetCore.Lightbox.Sending
     /// <summary> Заполняет поля сообщения Outbox </summary>
     internal class LightboxMessageInitializer : ILightboxMessageInitializer
     {
-        private readonly ExtendedJsonConvert _jsonConvert;
+        private readonly FriendlySerializer _serializer;
 
         private readonly ILightboxOptions _options;
 
         /// <summary> Заполняет поля сообщения Outbox </summary>
-        public LightboxMessageInitializer(ExtendedJsonConvert jsonConvert, ILightboxOptions options)
+        public LightboxMessageInitializer(FriendlySerializer serializer, ILightboxOptions options)
         {
-            _jsonConvert = jsonConvert;
+            _serializer = serializer;
             _options = options;
         }
 
@@ -33,7 +33,7 @@ namespace CUSTIS.NetCore.Lightbox.Sending
 
             if (context.Headers.Any())
             {
-                message.Headers = _jsonConvert.Serialize(context.Headers);
+                message.Headers = _serializer.Serialize(context.Headers);
             }
 
             return message;

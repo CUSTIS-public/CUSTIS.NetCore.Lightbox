@@ -46,7 +46,7 @@ namespace CUSTIS.NetCore.Lightbox.UnitTests.Core
         {
             return new(
                 _messageRepo.Object, _switchmanCollection.Object,
-                _serviceProvider.Object, lightboxOptions.Object, new ExtendedJsonConvert(new OutboxJsonConvert()),
+                _serviceProvider.Object, lightboxOptions.Object, new FriendlySerializer(new OutboxSerializer()),
                 new TypeLoader(), forwardFilters);
         }
 
