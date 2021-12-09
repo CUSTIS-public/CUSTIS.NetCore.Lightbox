@@ -1,7 +1,5 @@
 using CUSTIS.NetCore.Lightbox.DAL;
 using CUSTIS.NetCore.Lightbox.DependencyInjection;
-using CUSTIS.NetCore.Lightbox.Filters;
-using CUSTIS.NetCore.Lightbox.Observers;
 using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Processing;
 using CUSTIS.NetCore.Lightbox.Sending;
