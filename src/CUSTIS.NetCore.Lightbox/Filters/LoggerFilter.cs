@@ -20,7 +20,7 @@ namespace CUSTIS.NetCore.Lightbox.Filters
         {
             _logger.LogInformation(
                 "Добавляем в Outbox сообщение тип {MessageType}, заголовки [{Headers}], тело [{MessageBody}]",
-                context.MessageType, context.Headers.Keys, context.SerializedBody);
+                context.MessageType, context.Headers, context.SerializedBody);
 
             return next(context, token);
         }
@@ -30,7 +30,7 @@ namespace CUSTIS.NetCore.Lightbox.Filters
         {
             _logger.LogInformation(
                 "Обрабатываем сообщение {MessageId} с типом {MessageType}, попытка {MessageAttempt}, заголовки [{Headers}], тело [{MessageBody}]",
-                context.Id, context.MessageType, context.AttemptCount, context.Headers.Keys, context.SerializedBody);
+                context.Id, context.MessageType, context.AttemptCount, context.Headers, context.SerializedBody);
 
             return next(context, token);
         }
