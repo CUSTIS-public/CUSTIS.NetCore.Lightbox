@@ -9,9 +9,10 @@ using CUSTIS.NetCore.Lightbox.Sending;
 using CUSTIS.NetCore.Lightbox.Unity.UnitTests.Common;
 using CUSTIS.NetCore.Lightbox.Utils;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Practices.Unity;
+using Unity;
 using Moq;
 using NUnit.Framework;
+using Unity.Lifetime;
 
 namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests
 {

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using CUSTIS.NetCore.Lightbox.Filters;
 using CUSTIS.NetCore.Lightbox.Observers;
-using Microsoft.Practices.Unity;
+using Unity;
 
 namespace CUSTIS.NetCore.Lightbox.Unity
 {

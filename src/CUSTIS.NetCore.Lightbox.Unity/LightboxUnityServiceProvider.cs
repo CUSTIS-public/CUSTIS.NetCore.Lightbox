@@ -1,6 +1,6 @@
 using System;
 using CUSTIS.NetCore.Lightbox.DependencyInjection;
-using Microsoft.Practices.Unity;
+using Unity;
 
 namespace CUSTIS.NetCore.Lightbox.Unity
 {

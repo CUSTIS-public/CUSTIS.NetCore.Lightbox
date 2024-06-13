@@ -2,7 +2,7 @@ using System.Linq;
 using CUSTIS.NetCore.Lightbox.DependencyInjection;
 using CUSTIS.NetCore.Lightbox.Processing;
 using CUSTIS.NetCore.Lightbox.Unity.UnitTests.Common;
-using Microsoft.Practices.Unity;
+using Unity;
 using NUnit.Framework;
 
 namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests

@@ -6,7 +6,9 @@ using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Processing;
 using CUSTIS.NetCore.Lightbox.Sending;
 using CUSTIS.NetCore.Lightbox.Utils;
-using Microsoft.Practices.Unity;
+using Unity;
+using Unity.Injection;
+using Unity.Lifetime;
 
 namespace CUSTIS.NetCore.Lightbox.Unity
 {
@@ -26,12 +28,12 @@ namespace CUSTIS.NetCore.Lightbox.Unity
             container.AddScoped<IMessageBox, MessageBox>();
             container.AddSingleton<ILightboxMessageInitializer, LightboxMessageInitializer>();
 
-            container.RegisterType<IEnumerable<IOutboxPutFilter>>(
-                new InjectionFactory(c => c.ResolveAll<IOutboxPutFilter>()));
-            container.RegisterType<IEnumerable<IOutboxForwardFilter>>(
-                new InjectionFactory(c => c.ResolveAll<IOutboxForwardFilter>()));
-            container.RegisterType<IEnumerable<IForwardObserver>>(
-                new InjectionFactory(c => c.ResolveAll<IForwardObserver>()));
+            container.RegisterFactory<IEnumerable<IOutboxPutFilter>>(
+                c => c.ResolveAll<IOutboxPutFilter>());
+            container.RegisterFactory<IEnumerable<IOutboxForwardFilter>>(
+                c => c.ResolveAll<IOutboxForwardFilter>());
+            container.RegisterFactory<IEnumerable<IForwardObserver>>(
+                c => c.ResolveAll<IForwardObserver>());
 
             container.AddSingleton<TypeLoader>();
 
@@ -41,7 +43,7 @@ namespace CUSTIS.NetCore.Lightbox.Unity
         }
 
         /// <summary> Добавить фильтр </summary>
-        public static void AddPutFilter<T>(this IUnityContainer container, LifetimeManager lifetimeManager)
+        public static void AddPutFilter<T>(this IUnityContainer container, ITypeLifetimeManager lifetimeManager)
             where T : IOutboxPutFilter
         {
             // Фильтров может быть много, поэтому их надо регистрировать с именем,
@@ -50,7 +52,7 @@ namespace CUSTIS.NetCore.Lightbox.Unity
         }
 
         /// <summary> Добавить фильтр </summary>
-        public static void AddForwardFilter<T>(this IUnityContainer container, LifetimeManager lifetimeManager)
+        public static void AddForwardFilter<T>(this IUnityContainer container, ITypeLifetimeManager lifetimeManager)
             where T : IOutboxForwardFilter
         {
             // Фильтров может быть много, поэтому их надо регистрировать с именем,
@@ -59,7 +61,7 @@ namespace CUSTIS.NetCore.Lightbox.Unity
         }
 
         /// <summary> Добавить фильтр </summary>
-        public static void AddForwardObserver<T>(this IUnityContainer container, LifetimeManager lifetimeManager)
+        public static void AddForwardObserver<T>(this IUnityContainer container, ITypeLifetimeManager lifetimeManager)
             where T : IForwardObserver
         {
             // Фильтров может быть много, поэтому их надо регистрировать с именем,

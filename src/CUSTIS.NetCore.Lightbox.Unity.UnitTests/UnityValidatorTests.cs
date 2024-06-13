@@ -2,7 +2,7 @@ using CUSTIS.NetCore.Lightbox.Filters;
 using CUSTIS.NetCore.Lightbox.Observers;
 using CUSTIS.NetCore.Lightbox.Options;
 using CUSTIS.NetCore.Lightbox.Unity.UnitTests.Common;
-using Microsoft.Practices.Unity;
+using Unity;
 using Moq;
 using NUnit.Framework;
 

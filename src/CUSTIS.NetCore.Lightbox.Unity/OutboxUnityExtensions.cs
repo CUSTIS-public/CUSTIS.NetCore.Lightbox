@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CUSTIS.NetCore.Lightbox.Processing;
-using Microsoft.Practices.Unity;
+using Unity;
 
 namespace CUSTIS.NetCore.Lightbox.Unity
 {
@@ -15,7 +15,7 @@ namespace CUSTIS.NetCore.Lightbox.Unity
             }
         }
 
-        private static bool IsSwitchman(ContainerRegistration s)
+        private static bool IsSwitchman(IContainerRegistration s)
         {
             var switchmanType = typeof(ISwitchman);
             return switchmanType.IsAssignableFrom(s.MappedToType);

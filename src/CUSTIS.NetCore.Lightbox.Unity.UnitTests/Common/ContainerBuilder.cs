@@ -1,6 +1,6 @@
 using CUSTIS.NetCore.Lightbox.DAL;
 using CUSTIS.NetCore.Lightbox.Utils;
-using Microsoft.Practices.Unity;
+using Unity;
 using Moq;
 
 namespace CUSTIS.NetCore.Lightbox.Unity.UnitTests.Common
