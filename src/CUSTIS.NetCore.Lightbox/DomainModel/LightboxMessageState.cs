@@ -7,6 +7,12 @@ namespace CUSTIS.NetCore.Lightbox.DomainModel
         Created,
 
         /// <summary> При обработке произошла ошибка </summary>
-        Error
+        Error,
+
+        /// <summary> Отправлено </summary>
+        Sent,
+
+        /// <summary> Лимит попыток исчерпан </summary>
+        DeadLetter = 4
     }
 }

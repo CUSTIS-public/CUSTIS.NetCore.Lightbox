@@ -1,3 +1,5 @@
+using System;
+
 namespace CUSTIS.NetCore.Lightbox.DomainModel
 {
     /// <summary> Сообщение </summary>
@@ -33,5 +35,8 @@ namespace CUSTIS.NetCore.Lightbox.DomainModel
 
         /// <summary> Кол-во попыток обработки сообщения </summary>
         public long AttemptCount { get; set; }
+
+        /// <summary> Время последней обработки </summary>
+        public DateTime? LastRetryDate { get; set; }
     }
 }

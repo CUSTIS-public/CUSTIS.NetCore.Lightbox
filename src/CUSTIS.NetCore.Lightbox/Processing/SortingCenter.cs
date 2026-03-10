@@ -66,7 +66,16 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                 try
                 {
                     await ForwardMessage(message, token);
-                    await _lightboxMessageRepository.Remove(message);
+                    if (_lightboxOptions.IsStoreProcessed)
+                    {
+                        message.State = LightboxMessageState.Sent;
+                        message.LastRetryDate = DateTime.Now;
+                    }
+                    else
+                    {
+                        await _lightboxMessageRepository.Remove(message);
+                    }
+
                     success++;
                 }
                 catch (Exception e)
@@ -80,6 +89,7 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                     message.State = LightboxMessageState.Error;
                     message.Error = e.ToString();
                     message.AttemptCount++;
+                    message.LastRetryDate = DateTime.Now;
 
                     if (_lightboxOptions.MaxAttemptsErrorStrategy == MaxAttemptsErrorStrategy.Delete
                         && message.AttemptCount > _lightboxOptions.MaxAttemptsCount)
@@ -89,7 +99,15 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                             await forwardObserver.DeleteDueToMaxAttempts(message, token);
                         }
 
-                        await _lightboxMessageRepository.Remove(message);
+                        if (_lightboxOptions.IsStoreProcessed)
+                        {
+                            message.State = LightboxMessageState.DeadLetter;
+                            message.LastRetryDate = DateTime.Now;
+                        }
+                        else
+                        {
+                            await _lightboxMessageRepository.Remove(message);
+                        }
                     }
                 }
             }
@@ -97,6 +115,23 @@ namespace CUSTIS.NetCore.Lightbox.Processing
             await _lightboxMessageRepository.SaveChangesAsync(token);
 
             return new ForwardResult(success, errors);
+        }
+
+        /// <summary> Удалить обработанные сообщения с истекшим интервалом хранения </summary>
+        public async Task DeleteExpiredMessages(CancellationToken token = default)
+        {
+            if (_lightboxOptions.RetentionPeriod == null)
+            {
+                return;
+            }
+
+            var messages = await _lightboxMessageRepository.GetExpiredMessagesToRemove(_lightboxOptions.RetentionPeriod.Value,
+                               _lightboxOptions.ModuleName, token);
+
+            foreach (var message in messages)
+            {
+                await _lightboxMessageRepository.Remove(message);
+            }
         }
 
         private async Task ForwardMessage(ILightboxMessage message, CancellationToken token)

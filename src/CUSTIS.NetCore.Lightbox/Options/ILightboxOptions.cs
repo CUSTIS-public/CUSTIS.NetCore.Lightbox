@@ -1,3 +1,5 @@
+using System;
+
 namespace CUSTIS.NetCore.Lightbox.Options
 {
     /// <summary> Опции для настройки Outbox </summary>
@@ -12,5 +14,11 @@ namespace CUSTIS.NetCore.Lightbox.Options
         /// <summary> Имя модуля </summary>
         /// <remarks> Для случая, когда через одну таблицу работают несколько модулей </remarks>
         string? ModuleName { get; }
+
+        /// <summary> Хранить обработанные сообщения </summary>
+        bool IsStoreProcessed { get; }
+
+        /// <summary> Период хранения сообщений </summary>
+        TimeSpan? RetentionPeriod { get; }
     }
 }
