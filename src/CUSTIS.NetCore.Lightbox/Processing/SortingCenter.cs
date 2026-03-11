@@ -131,11 +131,18 @@ namespace CUSTIS.NetCore.Lightbox.Processing
             var messages = await _lightboxMessageRepository.GetExpiredMessagesToRemove(batchCount ?? DefaultDeleteBatchCount,
                                 _lightboxOptions.RetentionPeriod.Value, _lightboxOptions.ModuleName, token);
 
+            if (messages.Count == 0)
+            {
+                return 0;
+            }
+
             foreach (var message in messages)
             {
                 result++;
                 await _lightboxMessageRepository.Remove(message);
             }
+
+            await _lightboxMessageRepository.SaveChangesAsync(token);
 
             return result;
         }
