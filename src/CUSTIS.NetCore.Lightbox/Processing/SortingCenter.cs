@@ -17,6 +17,7 @@ namespace CUSTIS.NetCore.Lightbox.Processing
     internal class SortingCenter : ISortingCenter
     {
         private const int DefaultBatchCount = 50;
+        private const int DefaultDeleteBatchCount = 500;
 
         private readonly ILightboxMessageRepository _lightboxMessageRepository;
 
@@ -118,7 +119,7 @@ namespace CUSTIS.NetCore.Lightbox.Processing
         }
 
         /// <summary> Удалить обработанные сообщения с истекшим интервалом хранения </summary>
-        public async Task<int> DeleteExpiredMessages(CancellationToken token = default)
+        public async Task<int> DeleteExpiredMessages(int? batchCount = null, CancellationToken token = default)
         {
             var result = 0;
 
@@ -127,8 +128,8 @@ namespace CUSTIS.NetCore.Lightbox.Processing
                 return 0;
             }
 
-            var messages = await _lightboxMessageRepository.GetExpiredMessagesToRemove(_lightboxOptions.RetentionPeriod.Value,
-                               _lightboxOptions.ModuleName, token);
+            var messages = await _lightboxMessageRepository.GetExpiredMessagesToRemove(batchCount ?? DefaultDeleteBatchCount,
+                                _lightboxOptions.RetentionPeriod.Value, _lightboxOptions.ModuleName, token);
 
             foreach (var message in messages)
             {

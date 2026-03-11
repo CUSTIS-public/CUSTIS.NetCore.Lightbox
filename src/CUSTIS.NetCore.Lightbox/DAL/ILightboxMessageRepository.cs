@@ -25,10 +25,11 @@ namespace CUSTIS.NetCore.Lightbox.DAL
         Task<IReadOnlyCollection<ILightboxMessage>> GetMessagesToForward(int batchCount, long maxAttemptsCount, string? moduleName, CancellationToken token);
 
         /// <summary> Получить обработанные сообщения для удаления с истекшим интервалом хранения </summary>
+        /// <param name="batchCount">Кол-во сообщений, которые требуется получить</param>
         /// <param name="retentionPeriod">Период хранения сообщений</param>
         /// <param name="moduleName">Имя модуля (для случая, когда на одной БД работает несколько модулей)</param>
         /// <param name="token">Токен отмены</param>
-        Task<IReadOnlyCollection<ILightboxMessage>> GetExpiredMessagesToRemove(TimeSpan retentionPeriod, string? moduleName, CancellationToken token);
+        Task<IReadOnlyCollection<ILightboxMessage>> GetExpiredMessagesToRemove(int batchCount, TimeSpan retentionPeriod, string? moduleName, CancellationToken token);
 
         /// <summary> Удалить сообщение </summary>
         Task Remove(ILightboxMessage message);
