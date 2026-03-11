@@ -10,6 +10,6 @@ namespace CUSTIS.NetCore.Lightbox.Processing
         Task<ForwardResult> ForwardMessages(int? batchCount = null, CancellationToken token = default);
 
         /// <summary> Удалить обработанные сообщения с истекшим интервалом хранения </summary>
-        Task DeleteExpiredMessages(CancellationToken token = default);
+        Task<int> DeleteExpiredMessages(CancellationToken token = default);
     }
 }

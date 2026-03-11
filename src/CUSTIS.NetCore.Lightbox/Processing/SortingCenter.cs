@@ -118,11 +118,13 @@ namespace CUSTIS.NetCore.Lightbox.Processing
         }
 
         /// <summary> Удалить обработанные сообщения с истекшим интервалом хранения </summary>
-        public async Task DeleteExpiredMessages(CancellationToken token = default)
+        public async Task<int> DeleteExpiredMessages(CancellationToken token = default)
         {
+            var result = 0;
+
             if (_lightboxOptions.RetentionPeriod == null)
             {
-                return;
+                return 0;
             }
 
             var messages = await _lightboxMessageRepository.GetExpiredMessagesToRemove(_lightboxOptions.RetentionPeriod.Value,
@@ -130,8 +132,11 @@ namespace CUSTIS.NetCore.Lightbox.Processing
 
             foreach (var message in messages)
             {
+                result++;
                 await _lightboxMessageRepository.Remove(message);
             }
+
+            return result;
         }
 
         private async Task ForwardMessage(ILightboxMessage message, CancellationToken token)
